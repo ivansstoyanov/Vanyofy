@@ -254,7 +254,7 @@
 
             <!--<xctk:IntegerUpDown Name="myUpDownControl" />-->
 
-            <control:NumberSetter />
+            <control:NumberSetter  TestName="asdasd"  />
             <!--<Button Grid.Row="1" Height="30" Width="100" Style="{StaticResource InformButton}" Click="TestAlarm">Test</Button>-->
         </Grid>
         

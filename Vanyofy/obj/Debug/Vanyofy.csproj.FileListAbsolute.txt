@@ -23,3 +23,28 @@ C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\Vanyofy\bin\Debug\S
 C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\Vanyofy\bin\Debug\SpotifyService.pdb
 C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\Vanyofy\obj\Debug\NumberSetter.g.cs
 C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\Vanyofy\obj\Debug\NumberSetter.baml
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.csprojResolveAssemblyReference.cache
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\MainWindow.g.cs
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\NumberSetter.g.cs
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\App.g.cs
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy_MarkupCompile.cache
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy_MarkupCompile.lref
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\NumberSetter.baml
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.exe
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.pdb
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Vanyofy.exe.config
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Vanyofy.exe
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Vanyofy.pdb
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Newtonsoft.Json.dll
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\SpotifyAPI.dll
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\SpotifyService.dll
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\SpotifyService.pdb
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\Newtonsoft.Json.xml
+C:\work\me\Vanyofy\Vanyofy\bin\Debug\SpotifyAPI.xml
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\MainWindow.baml
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.g.resources
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.Properties.Resources.resources
+C:\work\me\Vanyofy\Vanyofy\obj\Debug\Vanyofy.csproj.GenerateResource.Cache

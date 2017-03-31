@@ -25,6 +25,14 @@ namespace Vanyofy
         int maxvalue = 100;
         int startvalue = 10;
 
+        public static readonly DependencyProperty TestNameProperty = DependencyProperty.Register("TestName", typeof(string), typeof(NumberSetter), new PropertyMetadata(string.Empty));
+
+        public string TestName
+        {
+            get { return (string)GetValue(TestNameProperty); }
+            set { SetValue(TestNameProperty, value); }
+        }
+
         public NumberSetter()
         {
             InitializeComponent();
