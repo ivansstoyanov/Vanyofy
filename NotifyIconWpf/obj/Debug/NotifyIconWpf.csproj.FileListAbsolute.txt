@@ -1,0 +1,5 @@
+C:\Users\ivans\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\ivans\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\Users\ivans\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Debug\NotifyIconWpf.csprojResolveAssemblyReference.cache
+C:\Users\ivans\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\ivans\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Debug\Hardcodet.Wpf.TaskbarNotification.pdb

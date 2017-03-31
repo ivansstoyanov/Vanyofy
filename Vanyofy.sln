@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanyofy", "Vanyofy\Vanyofy.csproj", "{D172FE9B-6647-46CF-A3AC-05EB889D9EFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyIconWpf", "NotifyIconWpf\NotifyIconWpf.csproj", "{7AC63864-7638-41C4-969C-D3197EF2BED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyConnector", "SpotifyService\SpotifyConnector.csproj", "{D0D0B23E-4D62-4FCB-9F14-09AEA3F10488}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D172FE9B-6647-46CF-A3AC-05EB889D9EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D172FE9B-6647-46CF-A3AC-05EB889D9EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D172FE9B-6647-46CF-A3AC-05EB889D9EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D172FE9B-6647-46CF-A3AC-05EB889D9EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AC63864-7638-41C4-969C-D3197EF2BED9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0D0B23E-4D62-4FCB-9F14-09AEA3F10488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0D0B23E-4D62-4FCB-9F14-09AEA3F10488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0D0B23E-4D62-4FCB-9F14-09AEA3F10488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0D0B23E-4D62-4FCB-9F14-09AEA3F10488}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
