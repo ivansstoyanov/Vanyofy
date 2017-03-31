@@ -57,24 +57,60 @@ namespace Vanyofy
             var interval = TimeSpan.FromSeconds(10);//TimeSpan.FromDays(1); // 86400
 
             // TODO: Add a CancellationTokenSource and supply the token here instead of None.
-            //RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);
-            
-
-
-
-            var a = Properties.Settings.Default.Alarms;
-
-            Properties.Settings.Default.Alarms.Add("added in code");
-            Properties.Settings.Default.Save();
-
-            Properties.Settings.Default.Reset();
-
-
-
-
-            //var json = new JavaScriptSerializer().Serialize(obj);
-            //var objj = new JavaScriptSerializer().Deserialize<Alarm>("");
+            //RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);  
         }
+
+
+        protected override void OnGiveFeedback(System.Windows.GiveFeedbackEventArgs e)
+        {
+            Mouse.SetCursor(Cursors.Hand);
+            e.Handled = true;
+        }
+
+        void s_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var mouse = Mouse.DirectlyOver;
+            var currentObj = mouse as Line;
+
+            if (mouse is Line && currentObj.Tag != null && currentObj.Tag.ToString() == "draggable" && sender is ListBoxItem)
+            {
+                Mouse.OverrideCursor = Cursors.SizeAll;
+
+                ListBoxItem draggedItem = sender as ListBoxItem;
+                DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
+                draggedItem.IsSelected = true;
+            }
+        }
+
+        void listbox1_Drop(object sender, DragEventArgs e)
+        {
+            Alarm droppedData = e.Data.GetData(typeof(Alarm)) as Alarm;
+            Alarm target = ((ListBoxItem)(sender)).DataContext as Alarm;
+
+            int removedIdx = this.AlarmsList.Items.IndexOf(droppedData);
+            int targetIdx = this.AlarmsList.Items.IndexOf(target);
+
+            if (removedIdx < targetIdx)
+            {
+                AlarmsObservableList.Insert(targetIdx + 1, droppedData);
+                AlarmsObservableList.RemoveAt(removedIdx);
+                this.AlarmsList.SelectedIndex = targetIdx;
+            }
+            else
+            {
+                int remIdx = removedIdx + 1;
+                if (AlarmsObservableList.Count + 1 > remIdx)
+                {
+                    AlarmsObservableList.Insert(targetIdx, droppedData);
+                    AlarmsObservableList.RemoveAt(remIdx);
+                    this.AlarmsList.SelectedIndex = targetIdx;
+                }
+            }
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+
 
 
         private static async Task RunPeriodicAsync(Action alarmExecute, TimeSpan startAfter, TimeSpan interval, CancellationToken token, Alarm currentAlarm)
@@ -182,7 +218,10 @@ namespace Vanyofy
 
         private void AddNewAlarm(object sender, RoutedEventArgs e)
         {
-            this.AlarmsObservableList.Add(new Alarm());
+            //this.AlarmsObservableList.Add(new Alarm());
+
+
+
         }
 
         private void ActivateAlarm(object sender, RoutedEventArgs e)
@@ -212,11 +251,6 @@ namespace Vanyofy
                 notActiveButt.Visibility = Visibility.Visible;
             }
 
-
-        }
-
-        private void NUDButtonDown_Click(object sender, RoutedEventArgs e)
-        {
 
         }
     }

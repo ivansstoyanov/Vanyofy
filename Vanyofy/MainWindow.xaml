@@ -193,18 +193,24 @@
 
         
         <Grid x:Name="AppAlarmsList" Grid.Row="2">
-            <ListBox x:Name="AlarmsList" Background="Transparent" BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectedItem="{Binding Path=SelectedVersion}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
+            <ListBox x:Name="AlarmsList" 
+                     Background="Transparent" BorderBrush="Transparent" 
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     SelectedItem="{Binding Path=SelectedVersion}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Margin" Value="0" />
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="AllowDrop" Value="True" />
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="s_PreviewMouseLeftButtonDown"/>
+                        <EventSetter Event="Drop" Handler="listbox1_Drop"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True" >
                                 <Setter Property="FontWeight" Value="Bold" />
                                 <Setter Property="Background" Value="Green" />
                                 <Setter Property="Foreground" Value="Black" />
+                                
                             </Trigger>
                         </Style.Triggers>
                         <Style.Resources>
@@ -220,22 +226,32 @@
                                 <ColumnDefinition Width="405" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            
-                            <Grid Background="Tomato">
+
+                            <Grid Background="Tomato" Tag="{Binding Id}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="365" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="340" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" Content="{Binding Name}" />
-                                <Button Grid.Column="1" x:Name="SetActive"
+                                <Grid Cursor="SizeAll" Margin="5">
+                                    <Line Stroke="Gray" X1="0" Y1="3" X2="20" Y2="3" StrokeThickness="3" Tag="draggable" />
+                                    <Line Stroke="Black" X1="0" Y1="6" X2="20" Y2="6" StrokeThickness="3" Tag="draggable" />
+                                    <Line Stroke="Gray" X1="0" Y1="9" X2="20" Y2="9" StrokeThickness="3" Tag="draggable" />
+                                    <Line Stroke="Black" X1="0" Y1="12" X2="20" Y2="12" StrokeThickness="3" Tag="draggable" />
+                                    <Line Stroke="Gray" X1="0" Y1="15" X2="20" Y2="15" StrokeThickness="3" Tag="draggable" />
+                                </Grid>
+
+                                <Label Grid.Column="1" Content="{Binding Name}" />
+                                
+                                <Button Grid.Column="2" x:Name="SetActive"
                                     Style="{StaticResource InformButton}" 
                                     Visibility="{Binding Active, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30" 
                                     Tag="false" Click="ActivateAlarm">
                                     ON
                                 </Button>
-                                <Button Grid.Column="1" x:Name="SetNotActive"
+                                <Button Grid.Column="2" x:Name="SetNotActive"
                                     Style="{StaticResource InformButton}" 
                                     Visibility="{Binding NotActive, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30"
@@ -249,15 +265,6 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <!--<Grid.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding ="{Binding ElementName=AlarmsList, Path=SelectedIndex}" Value="-1">
-                                                <Setter Property="Visibility" Value="Hidden"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>-->
 
                                 <Button Grid.Column="0" x:Name="EditCurrent"
                                     Style="{StaticResource InformButton}" 
