@@ -26,7 +26,9 @@ namespace Vanyofy
         public MainWindow()
         {
             InitializeComponent();
-            
+            this.AppAlarmSettingsRow.Height = new GridLength(0);
+
+
             this.AlarmsObservableList = new ObservableCollection<Alarm>();
             this.AlarmsObservableList.Add(new Alarm() {
                 Id = Guid.NewGuid(),
@@ -126,6 +128,7 @@ namespace Vanyofy
         {
             if (e.ChangedButton == MouseButton.Left)
             {
+                this.AlarmsList.SelectedItem = null;
                 Application.Current.MainWindow.DragMove();
             }
         }

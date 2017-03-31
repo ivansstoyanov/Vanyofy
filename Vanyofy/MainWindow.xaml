@@ -10,12 +10,12 @@
         mc:Ignorable="d"
         Closing="Window_Closing" 
         Closed="Window_Closed"
-        Background="#333"
-        WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        MouseDown="Window_MouseDown"
-        Title="Vanyofy" Height="350" Width="450">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Title="Vanyofy" Height="350" Width="480">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"  />
 
@@ -111,105 +111,119 @@
             </Setter>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35" />
-            <RowDefinition Height="*" />
+            <RowDefinition x:Name="AppAppTitleBar" Height="35" />
+            <RowDefinition x:Name="AppAlarmSettingsRow"  Height="100" />
+            <RowDefinition x:Name="AppAlarmsListRow" Height="*" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         
-        <Border Grid.Row="0" Grid.ColumnSpan="2" BorderThickness="0,0,0,2" BorderBrush="Orange" />
-        <DockPanel Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootWindow">
-            <DockPanel x:Name="TitleBar" Width="450">
-                <Button x:Name="CloseButton" Style="{StaticResource InformButton}" DockPanel.Dock="Right" Width="30" Height="30" Click="CloseButton_Click">
-                    <Grid>
-                        <Line Stroke="Black" X1="0" Y1="0" X2="20" Y2="20" StrokeThickness="3" />
-                        <Line Stroke="Black" X1="20" Y1="0" X2="0" Y2="20" StrokeThickness="3" />
-                    </Grid>
-                </Button>
-                <StackPanel>
-                    <Image Source="/Icons/home.ico" Width="30" Height="30" />
-                </StackPanel>
-                <TextBlock HorizontalAlignment="Left" FontSize="22" Padding="6,0" Foreground="#eee">Vanyofy</TextBlock>
+        <Grid x:Name="AppTitleBar" MouseDown="Window_MouseDown" Width="410" HorizontalAlignment="Left" Background="#333">
+            <Border BorderThickness="0,0,0,2" BorderBrush="Orange" />
+            <DockPanel x:Name="RootWindow">
+                <DockPanel x:Name="TitleBar" Width="410">
+                    <Button x:Name="CloseButton" Style="{StaticResource InformButton}" DockPanel.Dock="Right" Width="30" Height="30" Click="CloseButton_Click">
+                        <Grid>
+                            <Line Stroke="Black" X1="0" Y1="0" X2="20" Y2="20" StrokeThickness="3" />
+                            <Line Stroke="Black" X1="20" Y1="0" X2="0" Y2="20" StrokeThickness="3" />
+                        </Grid>
+                    </Button>
+                    <Button Style="{StaticResource InformButton}" DockPanel.Dock="Right" Click="AddNewAlarm">(0) New \/</Button>
+                    <StackPanel>
+                        <Image Source="/Icons/home.ico" Width="30" Height="30" />
+                    </StackPanel>
+                    <TextBlock HorizontalAlignment="Left" Width="380" FontSize="22" Padding="6,0" Foreground="#eee">Vanyofy</TextBlock>
+                </DockPanel>
             </DockPanel>
-        </DockPanel>
 
 
-        <tb:TaskbarIcon
-          x:Name="MyNotifyIcon"
-          IconSource="/Icons/home.ico"
-          ToolTipText="hello vanyo"
-          TrayContextMenuOpen="MyNotifyIcon_TrayContextMenuOpen"
-          PreviewTrayContextMenuOpen="MyNotifyIcon_PreviewTrayContextMenuOpen">
-            <!-- Set a simple context menu  -->
-            <!-- the data context of the context menu is the NotifyIcon itself (see more about this in DataBinding samples) -->
-            <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Vanyofy"
-                              Command="{commands:ShowSampleWindowCommand}"
-                              CommandParameter="{Binding}">
-                        <MenuItem.Icon>
-                            <Image Width="16"
-                                   Height="16"
-                                   Source="/Icons/home.ico" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+            <tb:TaskbarIcon
+              x:Name="MyNotifyIcon"
+              IconSource="/Icons/home.ico"
+              ToolTipText="hello vanyo"
+              TrayContextMenuOpen="MyNotifyIcon_TrayContextMenuOpen"
+              PreviewTrayContextMenuOpen="MyNotifyIcon_PreviewTrayContextMenuOpen">
+                <!-- Set a simple context menu  -->
+                <!-- the data context of the context menu is the NotifyIcon itself (see more about this in DataBinding samples) -->
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Vanyofy"
+                                  Command="{commands:ShowSampleWindowCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <Image Width="16"
+                                       Height="16"
+                                       Source="/Icons/home.ico" />
+                            </MenuItem.Icon>
+                        </MenuItem>
 
-                    <Separator />
+                        <Separator />
 
-                    <MenuItem Header="Hide Vanyofy"
-                              Command="{commands:HideSampleWindowCommand}"
-                              CommandParameter="{Binding}">
-                        <MenuItem.Icon>
-                            <Image Width="16"
-                                   Height="16"
-                                   Source="/Icons/Remove.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                        <MenuItem Header="Hide Vanyofy"
+                                  Command="{commands:HideSampleWindowCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <Image Width="16"
+                                       Height="16"
+                                       Source="/Icons/Remove.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
 
-                    <Separator />
+                        <Separator />
 
-                    <MenuItem Header="Exit"
-                              Command="{commands:CloseWindowCommand}"
-                              CommandParameter="{Binding}">
-                        <MenuItem.Icon>
-                            <Image Width="16"
-                                   Height="16"
-                                   Source="/Icons/Close.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+                        <MenuItem Header="Exit"
+                                  Command="{commands:CloseWindowCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <Image Width="16"
+                                       Height="16"
+                                       Source="/Icons/Close.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+        </Grid>
 
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Orange" BorderThickness="0,0,1,0" Background="{x:Null}" />
-        <Grid x:Name="AlarmsListGrid" Grid.Row="1" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
-            <Button Grid.Row="0" Style="{StaticResource InformButton}" Click="AddNewAlarm">(+) Add New Alarm</Button>
-            <ListBox x:Name="AlarmsList" Grid.Row="1" Background="Transparent" BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListBox.Resources>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Background" Value="Tomato" />
-                        <Setter Property="Margin" Value="1" />
+        
+        <Grid x:Name="AppAlarmSettings" Grid.Row="1">            
+
+        </Grid>
+
+        
+        <Grid x:Name="AppAlarmsList" Grid.Row="2">
+            <ListBox x:Name="AlarmsList" Background="Transparent" BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      SelectedItem="{Binding Path=SelectedVersion}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Background" Value="Green" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                        </Style.Resources>
                     </Style>
-                </ListBox.Resources>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Grid x:Name="AlarmSettings" Tag="{Binding Id}" Grid.Row="1" Grid.Column="1">
+                        <Grid x:Name="AlarmSettings" Tag="{Binding Id}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="405" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Grid Background="Tomato">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="365" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
@@ -219,29 +233,55 @@
                                     Visibility="{Binding Active, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30" 
                                     Tag="false" Click="ActivateAlarm">
-                                    <Grid>
-                                        <Line Stroke="Black" X1="10" Y1="0" X2="10" Y2="20" StrokeThickness="3" />
-                                        <Line Stroke="Black" X1="20" Y1="10" X2="0" Y2="10" StrokeThickness="3"  />
-                                    </Grid>
+                                    ON
                                 </Button>
                                 <Button Grid.Column="1" x:Name="SetNotActive"
                                     Style="{StaticResource InformButton}" 
                                     Visibility="{Binding NotActive, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30"
                                     Tag="true" Click="ActivateAlarm">
+                                    OFF
+                                </Button>
+                            </Grid>
+
+                            <Grid Grid.Column="1" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--<Grid.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding ="{Binding ElementName=AlarmsList, Path=SelectedIndex}" Value="-1">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>-->
+
+                                <Button Grid.Column="0" x:Name="EditCurrent"
+                                    Style="{StaticResource InformButton}" 
+                                    Width="30" Height="30" >
+                                    <Grid>
+                                        <Line Stroke="Black" X1="10" Y1="0" X2="10" Y2="20" StrokeThickness="3" />
+                                    </Grid>
+                                </Button>
+                                <Button Grid.Column="1" x:Name="DeleteCurrent"
+                                    Style="{StaticResource InformButton}"                                     
+                                    Width="30" Height="30" >
                                     <Grid>
                                         <Line Stroke="Black" X1="20" Y1="10" X2="0" Y2="10" StrokeThickness="3"  />
                                     </Grid>
                                 </Button>
-                            </Grid>                            
-                        </StackPanel>
+                            </Grid>
+
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
         </Grid>
         
-        <Grid x:Name="AlarmSettings" Grid.Row="1" Grid.Column="1">
+        <!--<Grid x:Name="AlarmSettings" Grid.Row="1" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
@@ -342,7 +382,7 @@
             <Button Grid.Row="4" Style="{StaticResource InformButton}" Height="25" Width="90" VerticalAlignment="Bottom" HorizontalAlignment="Right">Set Active</Button>
 
 
-        </Grid>
+        </Grid>-->
         
     </Grid>
 </Window>
