@@ -166,19 +166,21 @@
                                     Style="{StaticResource InformButton}" 
                                     Visibility="{Binding Active, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30" 
-                                    Tag="false" Click="ActivateAlarm">
+                                    Tag="false" Click="ActivateAlarmClick">
                                     ON
                                 </Button>
                                 <Button Grid.Column="2" x:Name="SetNotActive"
                                     Style="{StaticResource InformButton}" 
                                     Visibility="{Binding NotActive, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                     Width="30" Height="30"
-                                    Tag="true" Click="ActivateAlarm">
+                                    Tag="true" Click="ActivateAlarmClick">
                                     OFF
                                 </Button>
                             </Grid>
 
-                            <Grid Grid.Column="1" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid Grid.Column="1" 
+                                  Tag="{Binding Id}"
+                                  Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
@@ -186,14 +188,16 @@
 
                                 <Button Grid.Column="0" x:Name="EditCurrent"
                                     Style="{StaticResource InformButton}" 
-                                    Width="30" Height="30" >
+                                    Width="30" Height="30" 
+                                    Click="EditAlarmClick">
                                     <Grid>
                                         <Line Stroke="Black" X1="10" Y1="0" X2="10" Y2="20" StrokeThickness="3" />
                                     </Grid>
                                 </Button>
                                 <Button Grid.Column="1" x:Name="DeleteCurrent"
                                     Style="{StaticResource InformButton}"                                     
-                                    Width="30" Height="30" >
+                                    Width="30" Height="30"
+                                    Click="DeleteAlarmClick">
                                     <Grid>
                                         <Line Stroke="Black" X1="20" Y1="10" X2="0" Y2="10" StrokeThickness="3"  />
                                     </Grid>

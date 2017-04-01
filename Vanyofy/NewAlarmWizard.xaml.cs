@@ -33,12 +33,12 @@ namespace Vanyofy
         public void StartOver(Alarm alarm = null)
         {
             WizardAlarm = new ObservableAlarm();
-            WizardWrapper.DataContext = WizardAlarm;
-
+            
             if (alarm != null)
             {
                 WizardAlarm.SetAlarm(alarm);
             }
+            WizardWrapper.DataContext = WizardAlarm;
 
             CurrentStep = 0;
             ShowFinalStep(false);
@@ -104,6 +104,16 @@ namespace Vanyofy
             var a = this.WizardAlarm.TimeMinutes;
             //CurrentStep++;
             //this.SetStep(CurrentStep);
+            FunctionThatRaisesEvent();
+        }
+
+        public event EventHandler WizardCompleted;
+
+        private void FunctionThatRaisesEvent()
+        {
+            //Null check makes sure the main page is attached to the event
+            if (this.WizardCompleted != null)
+                this.WizardCompleted(this, new EventArgs());
         }
 
 

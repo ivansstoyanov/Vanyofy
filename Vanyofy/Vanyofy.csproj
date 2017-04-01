@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AlarmScheduler\AlarmScheduler.cs" />
     <Compile Include="Animations\AnimatedGridColumnBehavior.cs" />
     <Compile Include="Animations\AnimatedGridRowBehavior.cs" />
     <Compile Include="NewAlarmWizard.xaml.cs">

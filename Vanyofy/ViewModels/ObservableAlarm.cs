@@ -9,7 +9,7 @@ namespace Vanyofy.ViewModels
 {
     public class ObservableAlarm : INotifyPropertyChanged
     {
-        private Guid id { get; set; }
+        private Guid? id { get; set; }
 
         private string name { get; set; }
 
@@ -41,7 +41,7 @@ namespace Vanyofy.ViewModels
 
         public ObservableAlarm()
         {
-            this.id = Guid.NewGuid();
+            this.id = null;
             this.name = "New Alarm";
             this.active = false;
             this.notActive = !this.active;
@@ -87,14 +87,54 @@ namespace Vanyofy.ViewModels
                 }
             }
 
-            this.timeHours = alarm.Settings.Time.Hour;
-            this.timeMinutes = alarm.Settings.Time.Minute;
+            this.timeHours = alarm.Settings.Hour;
+            this.timeMinutes = alarm.Settings.Minutes;
 
             this.incrementVolume = alarm.Settings.IncrementVolume;
             this.incrementSeconds = alarm.Settings.IncrementSeconds;
         }
 
-        public Guid ID
+        public Alarm GetCurrentAlarm()
+        {
+            var newAlarm = new Alarm();
+
+            newAlarm.Id = this.ID;
+            newAlarm.Name = this.Name;
+            newAlarm.Active = false;
+            newAlarm.NotActive = true;
+            newAlarm.DateCreated = DateTime.Now;
+
+            newAlarm.Settings = new AlarmSetting();
+            newAlarm.Settings.PlaylistUrl = this.PlaylistUrl;
+
+            newAlarm.Settings.IncrementVolume = this.IncrementVolume;
+            newAlarm.Settings.IncrementSeconds = this.IncrementSeconds;
+
+            newAlarm.Settings.Hour = this.TimeHours;
+            newAlarm.Settings.Minutes = this.TimeMinutes;
+
+            newAlarm.Settings.Days = new List<DayOfWeek>();
+            for (int i = 0; i < this.Days.Count; i++)
+            {
+                if (this.Days[i] == false)
+                {
+                    switch (i)
+                    {
+                        case 0: newAlarm.Settings.Days.Add(DayOfWeek.Monday); break;
+                        case 1: newAlarm.Settings.Days.Add(DayOfWeek.Tuesday); break;
+                        case 2: newAlarm.Settings.Days.Add(DayOfWeek.Wednesday); break;
+                        case 3: newAlarm.Settings.Days.Add(DayOfWeek.Thursday); break;
+                        case 4: newAlarm.Settings.Days.Add(DayOfWeek.Friday); break;
+                        case 5: newAlarm.Settings.Days.Add(DayOfWeek.Saturday); break;
+                        case 6: newAlarm.Settings.Days.Add(DayOfWeek.Sunday); break;
+                    }
+                }
+            }
+
+            return newAlarm;
+        }
+
+        public Guid? ID
         {
             get
             {

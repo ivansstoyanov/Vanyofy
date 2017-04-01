@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -10,66 +11,65 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Vanyofy.Animations;
 using Vanyofy.Models;
+using Vanyofy.Settings;
 
 namespace Vanyofy
 {
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Alarm> AlarmsObservableList = null;
-        public MainWindow()
+        public void Handler_WizardCompleted(object sender, EventArgs e)
         {
-            InitializeComponent();
-            this.AppAlarmSettingsRow.Height = new GridLength(0);
+            var wizard = (NewAlarmWizard)sender;
+            var newAlarm = wizard.WizardAlarm.GetCurrentAlarm();
 
+            if (newAlarm.Id != null)
+            {
+                this.AlarmScheduler.CheckForCancellationToken(newAlarm.Id.Value);
+            }
+
+            AlarmsProvider ap = new AlarmsProvider();
+            ap.Add(newAlarm);
+
+            ShowAlarmWizard();
+
+            RefreshAlarmsData();
+        }
+
+        public void RefreshAlarmsData()
+        {
+            AlarmsProvider ap = new AlarmsProvider();
+            var alarms = ap.GetAll();
 
             this.AlarmsObservableList = new ObservableCollection<Alarm>();
-            this.AlarmsObservableList.Add(new Alarm() {
-                Id = Guid.NewGuid(),
-                Name = "Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1Alarm 1",
-                Active = true,
-                NotActive = false,
-                Settings = new AlarmSetting()
-            });
-            this.AlarmsObservableList.Add(new Alarm()
+            foreach (var a in alarms)
             {
-                Id = Guid.NewGuid(),
-                Name = "Alarm 2",
-                Active = false,
-                NotActive = true,
-                Settings = new AlarmSetting()
-            });
+                this.AlarmsObservableList.Add(a);
+            }
 
             AlarmsList.ItemsSource = this.AlarmsObservableList;
+            this.AlarmsList.SelectedItem = null;
 
-            Alarm testA = this.AlarmsObservableList[0];
+            //TODO animation when refreshing
+        }
 
+        public ObservableCollection<Alarm> AlarmsObservableList = null;
+        AlarmScheduler.AlarmScheduler AlarmScheduler = null;
 
+        public MainWindow()
+        {
+            //TODO remove style when hover or selected listbox
 
-            //todo N.B.
-            //if now time is bigger, add one day;
+            //TODO when no alarms???
 
-            //DateTime alarmStart = DateTime.Now.AddSeconds(20); // new DateTime(2017, 3, 29, 19, 14, 0);
+            InitializeComponent();
+            this.AppAlarmSettingsRow.Height = new GridLength(0);
+            this.AlarmWizard.WizardCompleted += new EventHandler(Handler_WizardCompleted);
 
-            //var startinterval = alarmStart.AddSeconds(-7) - DateTime.Now;
-            //var interval = TimeSpan.FromSeconds(30);//TimeSpan.FromDays(1); // 86400
+            this.AlarmScheduler = new AlarmScheduler.AlarmScheduler();
 
-            //// TODO: Add a CancellationTokenSource and supply the token here instead of None.
-            //RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);
+            RefreshAlarmsData();
 
-
-
-            ////////morning test
-            ////DateTime alarmStart = DateTime.Now; // new DateTime(2017, 3, 29, 19, 14, 0);
-            ////TimeSpan ts = new TimeSpan(9, 20, 0);
-            ////alarmStart = alarmStart.Date + ts;
-            //////todo
-            //////if now time is bigger, add one day;
-            
-            ////var startinterval = alarmStart - DateTime.Now;
-            ////var interval = TimeSpan.FromDays(1);//TimeSpan.FromDays(1); // 86400
-
-            ////// TODO: Add a CancellationTokenSource and supply the token here instead of None.
-            ////RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);
+            this.AlarmScheduler.ScheduleAllAlarms(this.AlarmsObservableList);
         }
 
 
@@ -107,6 +107,8 @@ namespace Vanyofy
                 AlarmsObservableList.Insert(targetIdx + 1, droppedData);
                 AlarmsObservableList.RemoveAt(removedIdx);
                 this.AlarmsList.SelectedIndex = targetIdx;
+
+                SaveNewOrder();
             }
             else
             {
@@ -116,64 +118,31 @@ namespace Vanyofy
                     AlarmsObservableList.Insert(targetIdx, droppedData);
                     AlarmsObservableList.RemoveAt(remIdx);
                     this.AlarmsList.SelectedIndex = targetIdx;
+
+                    SaveNewOrder();
                 }
             }
 
             Mouse.OverrideCursor = Cursors.Arrow;
+
+            //TODO try deselecting after drag
         }
 
-
-
-
-        private static async Task RunPeriodicAsync(Action alarmExecute, TimeSpan startAfter, TimeSpan interval, CancellationToken token, Alarm currentAlarm)
+        private void SaveNewOrder()
         {
-            if (startAfter > TimeSpan.Zero)
+            List<Guid> newOrder = new List<Guid>();
+
+            foreach (var listItem in this.AlarmsObservableList)
             {
-                await Task.Delay(startAfter, token);
+                newOrder.Add(listItem.Id.Value);
             }
 
-            while (!token.IsCancellationRequested)
-            {
-                alarmExecute?.Invoke();
-
-                if (interval > TimeSpan.Zero)
-                {
-                    await Task.Delay(interval, token);
-                }
-            }
+            AlarmsProvider ap = new AlarmsProvider();
+            ap.UpdateOrder(newOrder);
         }
 
-        private void AlarmExecute(Alarm currentAlarm)
-        {
-            if (currentAlarm.NotActive)
-            {
-                return;
-            }
 
-            DayOfWeek today = DateTime.Now.DayOfWeek;
-            if (!currentAlarm.Settings.Days.Contains(today))
-            {
-                //return;
-            }
 
-            //start alarm
-            this.StartAlarm(currentAlarm);
-        }
-
-        private void StartAlarm(Alarm alarm)
-        {
-            SpotifyConnector.SpotifyConnector sc = new SpotifyConnector.SpotifyConnector();
-
-            try
-            {
-                sc.StartSpotify();
-                sc.StartPlaylist();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
 
 
@@ -188,6 +157,7 @@ namespace Vanyofy
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            //TODO remove this on release
             Application.Current.Shutdown();
             //this.WindowState = WindowState.Minimized;
         }
@@ -235,13 +205,16 @@ namespace Vanyofy
 
         private void AddNewAlarm(object sender, RoutedEventArgs e)
         {
-            //this.AlarmsObservableList.Add(new Alarm());
+            //TODO change button style /\
 
-            //this.AppAlarmSettingsRow.Height = new GridLength(100);
+            ShowAlarmWizard();
+        }
 
+        private void ShowAlarmWizard(Alarm editAlarm = null)
+        {
             if (this.AppAlarmSettingsRow.Height.Value == 0)
             {
-                AlarmWizard.StartOver();
+                AlarmWizard.StartOver(editAlarm);
                 var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
                 //anim.Completed += (s, _) => Expanded = false;
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
@@ -254,7 +227,7 @@ namespace Vanyofy
             }
         }
 
-        private void ActivateAlarm(object sender, RoutedEventArgs e)
+        private void ActivateAlarmClick(object sender, RoutedEventArgs e)
         {
             var parent = ((Grid)((Button)sender).Parent).Tag;
             var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
@@ -269,6 +242,11 @@ namespace Vanyofy
                 activeButt.Visibility = Visibility.Visible;
                 var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
                 notActiveButt.Visibility = Visibility.Hidden;
+                
+                AlarmsProvider ap = new AlarmsProvider();
+                ap.SetActive(currentAlarm);
+
+                this.AlarmScheduler.ScheduleAlarm(currentAlarm);
             }
             else
             {
@@ -279,9 +257,33 @@ namespace Vanyofy
                 activeButt.Visibility = Visibility.Hidden;
                 var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
                 notActiveButt.Visibility = Visibility.Visible;
+                
+                AlarmsProvider ap = new AlarmsProvider();
+                ap.SetActive(currentAlarm);
+
+                this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
             }
+        }
 
+        private void EditAlarmClick(object sender, RoutedEventArgs e)
+        {
+            var parent = ((Grid)((Button)sender).Parent).Tag;
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
 
+            ShowAlarmWizard(currentAlarm);
+        }
+
+        private void DeleteAlarmClick(object sender, RoutedEventArgs e)
+        {
+            var parent = ((Grid)((Button)sender).Parent).Tag;
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+            
+            this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
+
+            AlarmsProvider ap = new AlarmsProvider();
+            ap.Delete(currentAlarm.Id.Value);
+
+            RefreshAlarmsData();
         }
     }
 }

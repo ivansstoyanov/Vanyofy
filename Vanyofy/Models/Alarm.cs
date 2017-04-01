@@ -4,7 +4,7 @@ namespace Vanyofy.Models
 {
     public class Alarm
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string Name { get; set; }
 
@@ -18,7 +18,7 @@ namespace Vanyofy.Models
 
         public Alarm()
         {
-            this.Id = Guid.NewGuid();
+            this.Id = null;
             this.Name = "New Alarm";
             this.Active = false;
             this.NotActive = !this.Active;

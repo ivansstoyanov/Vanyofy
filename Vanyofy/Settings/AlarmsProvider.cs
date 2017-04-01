@@ -32,17 +32,54 @@ namespace Vanyofy.Settings
 
         public void Add(Alarm newAlarm)
         {
-            var json = new JavaScriptSerializer().Serialize(newAlarm);
+            if (newAlarm.Id == null)
+            {
+                newAlarm.Id = Guid.NewGuid();
+                var json = new JavaScriptSerializer().Serialize(newAlarm);
 
-            Properties.Settings.Default.Alarms.Add(json);
-            Properties.Settings.Default.Save();
+                Properties.Settings.Default.Alarms.Add(json);
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Edit(newAlarm);
+            }
         }
 
         public void Edit(Alarm newAlarm)
         {
-            this.Delete(newAlarm.Id);
+            this.Delete(newAlarm.Id.Value);
+            newAlarm.Id = null;
+            newAlarm.Active = false;
+            newAlarm.NotActive = true;
 
             this.Add(newAlarm);
+        }
+
+        public void SetActive(Alarm newAlarm)
+        {
+            var defaultSettings = Properties.Settings.Default.Alarms;
+            StringCollection tmpSettings = new StringCollection();
+
+            foreach (var setting in defaultSettings)
+            {
+                var currentAlarm = new JavaScriptSerializer().Deserialize<Alarm>(setting);
+                if (currentAlarm.Id != newAlarm.Id.Value)
+                {
+                    tmpSettings.Add(setting);
+                }
+                else
+                {
+                    var json = new JavaScriptSerializer().Serialize(newAlarm);
+
+                    tmpSettings.Add(json);
+                }
+            }
+
+            this.ResetAll();
+
+            Properties.Settings.Default.Alarms = tmpSettings;
+            Properties.Settings.Default.Save();
         }
 
         public void Delete(Guid id)
@@ -68,6 +105,30 @@ namespace Vanyofy.Settings
         public void ResetAll()
         {
             Properties.Settings.Default.Reset();
+        }
+
+        public void UpdateOrder(List<Guid> newOrder)
+        {
+            var defaultSettings = Properties.Settings.Default.Alarms;
+            StringCollection newOrderSettings = new StringCollection();
+
+            foreach (var itemId in newOrder)
+            {
+                foreach (var setting in defaultSettings)
+                {
+                    var currentAlarm = new JavaScriptSerializer().Deserialize<Alarm>(setting);
+                    if (currentAlarm.Id == itemId)
+                    {
+                        newOrderSettings.Add(setting);
+                        break;
+                    }
+                }
+            }
+
+            this.ResetAll();
+
+            Properties.Settings.Default.Alarms = newOrderSettings;
+            Properties.Settings.Default.Save();
         }
     }
 }

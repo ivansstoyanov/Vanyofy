@@ -9,8 +9,10 @@ namespace Vanyofy.Models
          
         public List<DayOfWeek> Days { get; set; }
          
-        public DateTime Time { get; set; }
-         
+        public int Hour { get; set; }
+
+        public int Minutes { get; set; }
+        
         public bool IncrementVolume { get; set; }
 
         public int IncrementSeconds { get; set; }
@@ -19,7 +21,8 @@ namespace Vanyofy.Models
         {
             this.PlaylistUrl = string.Empty;
             this.Days = new List<DayOfWeek>();
-            this.Time = new DateTime();
+            this.Hour = 8;
+            this.Minutes = 40;
             this.IncrementVolume = false;
             this.IncrementSeconds = 0;
     }
