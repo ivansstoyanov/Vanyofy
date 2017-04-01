@@ -1,41 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Vanyofy
 {
-    /// <summary>
-    /// Interaction logic for NumberSetter.xaml
-    /// </summary>
     public partial class NumberSetter : UserControl
     {
         int minvalue = 0;
         int maxvalue = 100;
         int startvalue = 10;
 
-        public static readonly DependencyProperty TestNameProperty = DependencyProperty.Register("TestName", typeof(string), typeof(NumberSetter), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(string), typeof(NumberSetter), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(string), typeof(NumberSetter), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty StartValueProperty = DependencyProperty.Register("StartValue", typeof(string), typeof(NumberSetter), new PropertyMetadata(string.Empty));
 
-        public string TestName
+        public string MinValue
         {
-            get { return (string)GetValue(TestNameProperty); }
-            set { SetValue(TestNameProperty, value); }
+            get { return (string)GetValue(MinValueProperty); }
+            set { SetValue(MinValueProperty, value); }
+        }
+
+        public string MaxValue
+        {
+            get { return (string)GetValue(MaxValueProperty); }
+            set { SetValue(MaxValueProperty, value); }
+        }
+
+        public string StartValue
+        {
+            get { return (string)GetValue(StartValueProperty); }
+            set { SetValue(StartValueProperty, value); }
         }
 
         public NumberSetter()
         {
             InitializeComponent();
+
+            int.TryParse(this.MinValue, out this.minvalue);
+            int.TryParse(this.MaxValue, out this.maxvalue);
+            //int.TryParse(this.StartValue, out this.startvalue);
+
             NUDTextBox.Text = startvalue.ToString();
         }
 
@@ -90,6 +96,8 @@ namespace Vanyofy
                 if (!int.TryParse(NUDTextBox.Text, out number)) NUDTextBox.Text = startvalue.ToString();
             if (number > maxvalue) NUDTextBox.Text = maxvalue.ToString();
             if (number < minvalue) NUDTextBox.Text = minvalue.ToString();
+
+
             NUDTextBox.SelectionStart = NUDTextBox.Text.Length;
 
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Vanyofy.Models;
@@ -18,9 +19,11 @@ namespace Vanyofy.ViewModels
 
         private string playlistUrl { get; set; }
 
-        private List<DayOfWeek> days { get; set; }
+        private ObservableCollection<bool> days { get; set; }
 
-        private DateTime time { get; set; }
+        private int timeHours { get; set; }
+
+        private int timeMinutes { get; set; }
 
         private bool incrementVolume { get; set; }
 
@@ -43,9 +46,15 @@ namespace Vanyofy.ViewModels
             this.active = false;
             this.notActive = !this.active;
 
-            this.playlistUrl = "";
-            this.days = new List<DayOfWeek>();
-            this.time = DateTime.Now;
+            this.playlistUrl = string.Empty;
+            this.days = new ObservableCollection<bool>();
+            for (int i = 0; i < 7; i++)
+            {
+                this.days.Add(true);
+            }
+
+            this.timeHours = 8;
+            this.timeMinutes = 40;
             this.incrementVolume = false;
             this.incrementSeconds = 0;
         }
@@ -58,8 +67,29 @@ namespace Vanyofy.ViewModels
             this.notActive = alarm.NotActive;
 
             this.playlistUrl = alarm.Settings.PlaylistUrl;
-            this.days = alarm.Settings.Days;
-            this.time = alarm.Settings.Time;
+            this.days = new ObservableCollection<bool>();
+            for (int i = 0; i < 7; i++)
+            {
+                this.days.Add(true);
+            }
+
+            for (int i = 0; i < alarm.Settings.Days.Count; i++)
+            {
+                switch(alarm.Settings.Days[i])
+                {
+                    case DayOfWeek.Monday: this.days[0] = false; break;
+                    case DayOfWeek.Tuesday: this.days[1] = false; break;
+                    case DayOfWeek.Wednesday: this.days[2] = false; break;
+                    case DayOfWeek.Thursday: this.days[3] = false; break;
+                    case DayOfWeek.Friday: this.days[4] = false; break;
+                    case DayOfWeek.Saturday: this.days[5] = false; break;
+                    case DayOfWeek.Sunday: this.days[6] = false; break;
+                }
+            }
+
+            this.timeHours = alarm.Settings.Time.Hour;
+            this.timeMinutes = alarm.Settings.Time.Minute;
+
             this.incrementVolume = alarm.Settings.IncrementVolume;
             this.incrementSeconds = alarm.Settings.IncrementSeconds;
         }
@@ -123,6 +153,23 @@ namespace Vanyofy.ViewModels
             }
         }
 
+        public ObservableCollection<bool> Days
+        {
+            get
+            {
+                return this.days;
+            }
+
+            set
+            {
+                if (value != this.days)
+                {
+                    this.days = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public string PlaylistUrl
         {
             get
@@ -135,6 +182,40 @@ namespace Vanyofy.ViewModels
                 if (value != this.playlistUrl)
                 {
                     this.playlistUrl = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int TimeHours
+        {
+            get
+            {
+                return this.timeHours;
+            }
+
+            set
+            {
+                if (value != this.timeHours)
+                {
+                    this.timeHours = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int TimeMinutes
+        {
+            get
+            {
+                return this.timeMinutes;
+            }
+
+            set
+            {
+                if (value != this.timeMinutes)
+                {
+                    this.timeMinutes = value;
                     NotifyPropertyChanged();
                 }
             }

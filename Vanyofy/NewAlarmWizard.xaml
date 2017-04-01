@@ -6,11 +6,91 @@
              xmlns:local="clr-namespace:Vanyofy"
              xmlns:animations="clr-namespace:Vanyofy.Animations"
              xmlns:models="clr-namespace:Vanyofy.ViewModels"
+             xmlns:control = "clr-namespace:Vanyofy" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="480">
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="CheckedOrange" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FFB5B5B5" Offset="0" />
+            <GradientStop Color="#FFDEDEDE" Offset="0.1" />
+            <GradientStop Color="#FFEEEEEE" Offset="0.5" />
+            <GradientStop Color="#FFFAFAFA" Offset="0.5" />
+            <GradientStop Color="#FFFEFEFE" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CheckedOrangeBorder" Color="#FF8E4A1B" />
+        
+        <Style x:Key="OrangeSwitchStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="OnChecking">
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="20" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                            <Storyboard x:Key="OnUnchecking">
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="0" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <DockPanel x:Name="dockPanel">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                            <Grid>
+                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="3" Height="38" Width="30">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFCA6A13" Offset="0" />
+                                            <GradientStop Color="#FFF67D0C" Offset="0.2" />
+                                            <GradientStop Color="#FFFE7F0C" Offset="0.2" />
+                                            <GradientStop Color="#FFFA8E12" Offset="0.5" />
+                                            <GradientStop Color="#FFFF981D" Offset="0.5" />
+                                            <GradientStop Color="#FFFCBC5A" Offset="1" />   
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <Border BorderBrush="#FF939393" HorizontalAlignment="Center" VerticalAlignment="top" x:Name="slider" Width="35" Height="20" BorderThickness="1" CornerRadius="3" RenderTransformOrigin="0.5,0.5" Margin="0">
+                                    <Border.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                            <SkewTransform AngleX="0" AngleY="0" />
+                                            <RotateTransform Angle="0" />
+                                            <TranslateTransform X="0" Y="0" />
+                                        </TransformGroup>
+                                    </Border.RenderTransform>
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#FFF0F0F0" Offset="0" />
+                                            <GradientStop Color="#FFCDCDCD" Offset="0.1" />
+                                            <GradientStop Color="#FFFBFBFB" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Grid>
+                        </DockPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource OnUnchecking}" x:Name="OnUnchecking_BeginStoryboard" />
+                                </Trigger.ExitActions>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource OnChecking}" x:Name="OnChecking_BeginStoryboard" />
+                                </Trigger.EnterActions>                                
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource CheckedOrange}" />
+                                <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{StaticResource CheckedOrangeBorder}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid x:Name="WizardWrapper" HorizontalAlignment="Right" Margin="0,0,30,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition  Width="405" />
+            <ColumnDefinition Width="405" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
         <Grid.Triggers>
@@ -23,23 +103,125 @@
             </EventTrigger>
         </Grid.Triggers>
 
-        <StackPanel x:Name="step1" Width="0" HorizontalAlignment="Left">
+        <StackPanel x:Name="step1" Width="0" HorizontalAlignment="Left" Background="#555">
             <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">Set Name</TextBlock>
             <TextBox HorizontalAlignment="Stretch" FontSize="22" Padding="6,0" Foreground="#eee" Background="Orange"
                      Text="{Binding Path=Name, Mode=TwoWay}">
             </TextBox>
         </StackPanel>
 
-        <StackPanel x:Name="step2" Width="0" HorizontalAlignment="Left">
+        <StackPanel x:Name="step2" Width="0" HorizontalAlignment="Left" Background="#555">
             <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">Set Time</TextBlock>
-            <TextBox HorizontalAlignment="Stretch" FontSize="22" Padding="6,0" Foreground="#eee" Background="Orange" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- TODO use number setter instead-->
+                
+                <Grid Width="100" Height="50" Margin="50,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Background="orange" Name="NUDTextBoxh" FontSize="20" Grid.Column="1" TextAlignment="Center" Padding="0,8,0,0" 
+                        PreviewKeyDown="NUDTextBoxh_PreviewKeyDown" PreviewKeyUp="NUDTextBoxh_PreviewKeyUp" TextChanged="NUDTextBoxh_TextChanged"
+                        Text="{Binding Path=TimeHours, Mode=TwoWay}"/>
+
+                    <RepeatButton Name="NUDButtonUPh" Grid.Column="2" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonUPh_Click">/</RepeatButton>
+                    <RepeatButton Name="NUDButtonDownh" Grid.Column="0" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonDownh_Click">/</RepeatButton>
+                </Grid>
+                <TextBlock FontSize="22" Foreground="#eee" VerticalAlignment="Center">HH</TextBlock>
+
+                <Grid Width="100" Height="50" Margin="50,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Background="orange" Name="NUDTextBox" FontSize="20" Grid.Column="1" TextAlignment="Center" Padding="0,8,0,0" 
+                        PreviewKeyDown="NUDTextBox_PreviewKeyDown" PreviewKeyUp="NUDTextBox_PreviewKeyUp" TextChanged="NUDTextBox_TextChanged"
+                        Text="{Binding Path=TimeMinutes, Mode=TwoWay}"/>
+
+                    <RepeatButton Name="NUDButtonUP" Grid.Column="2" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonUP_Click">/</RepeatButton>
+                    <RepeatButton Name="NUDButtonDown" Grid.Column="0" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonDown_Click">/</RepeatButton>
+                </Grid>
+                <TextBlock FontSize="22" Foreground="#eee" VerticalAlignment="Center">MM</TextBlock>
+            </StackPanel>
+            
         </StackPanel>
 
+        <StackPanel x:Name="step3" Width="0" HorizontalAlignment="Left" Background="#555">
+            <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">step 3</TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Mon" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[0]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Tue" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[1]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Wed" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[2]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="Thu" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[3]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Fri" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[4]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="5">
+                    <TextBlock Text="Sat" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[5]}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="6">
+                    <TextBlock Text="Sun" FontSize="16" Foreground="white" HorizontalAlignment="Center" />
+                    <CheckBox Style="{StaticResource OrangeSwitchStyle}" IsChecked="{Binding Days[6]}" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel x:Name="step4" Width="0" HorizontalAlignment="Left">
+            <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">Set PlaylistUrl</TextBlock>
+            <TextBox HorizontalAlignment="Stretch" FontSize="22" Padding="6,0" Foreground="#eee" Background="Orange" 
+                     Text="{Binding Path=PlaylistUrl, Mode=TwoWay}"/>
+        </StackPanel>
+
+        <!--<StackPanel x:Name="step5" Width="0" HorizontalAlignment="Left">
+            <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">IncraseVolume</TextBlock>
+        </StackPanel>-->
+
         <StackPanel Grid.Column="1">
-            <Button x:Name="Next" Style="{StaticResource InformButton}" Width="30" Height="70" Click="Next_Click" >
+            <Button x:Name="NextButton" Style="{StaticResource InformButton}" Width="30" Height="70" Click="Next_Click" >
                 <Grid>
                     <Line Stroke="Black" X1="0" Y1="0" X2="20" Y2="25" StrokeThickness="3" />
                     <Line Stroke="Black" X1="20" Y1="25" X2="0" Y2="50" StrokeThickness="3" />
+                </Grid>
+            </Button>
+
+            <Button x:Name="CompleteButton" Style="{StaticResource InformButton}" Visibility="Collapsed" Width="30" Height="70" Click="Complate_Click" >
+                <Grid>
+                    <Line Stroke="Black" X1="0" Y1="35" X2="10" Y2="50" StrokeThickness="3" />
+                    <Line Stroke="Black" X1="20" Y1="10" X2="10" Y2="50" StrokeThickness="3" />
                 </Grid>
             </Button>
         </StackPanel>
