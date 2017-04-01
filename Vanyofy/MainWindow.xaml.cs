@@ -239,8 +239,9 @@ namespace Vanyofy
 
             //this.AppAlarmSettingsRow.Height = new GridLength(100);
 
-            if(this.AppAlarmSettingsRow.Height.Value == 0)
+            if (this.AppAlarmSettingsRow.Height.Value == 0)
             {
+                AlarmWizard.StartOver();
                 var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
                 //anim.Completed += (s, _) => Expanded = false;
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);

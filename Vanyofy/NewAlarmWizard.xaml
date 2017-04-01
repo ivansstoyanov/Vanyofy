@@ -4,20 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Vanyofy"
+             xmlns:animations="clr-namespace:Vanyofy.Animations"
+             xmlns:models="clr-namespace:Vanyofy.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="480">
-    <Grid>
+    <Grid x:Name="WizardWrapper" HorizontalAlignment="Right" Margin="0,0,30,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="405" />
+            <ColumnDefinition  Width="405" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
-        <StackPanel>
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="WizardWrapper" Storyboard.TargetProperty="(animations:AnimatedGridColumnBehavior.AnimatedWidth)"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
+
+        <StackPanel x:Name="step1" Width="0" HorizontalAlignment="Left">
             <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">Set Name</TextBlock>
+            <TextBox HorizontalAlignment="Stretch" FontSize="22" Padding="6,0" Foreground="#eee" Background="Orange"
+                     Text="{Binding Path=Name, Mode=TwoWay}">
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel x:Name="step2" Width="0" HorizontalAlignment="Left">
+            <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">Set Time</TextBlock>
             <TextBox HorizontalAlignment="Stretch" FontSize="22" Padding="6,0" Foreground="#eee" Background="Orange" />
         </StackPanel>
 
         <StackPanel Grid.Column="1">
-            <Button x:Name="Next" Style="{StaticResource InformButton}" Width="30" Height="70" >
+            <Button x:Name="Next" Style="{StaticResource InformButton}" Width="30" Height="70" Click="Next_Click" >
                 <Grid>
                     <Line Stroke="Black" X1="0" Y1="0" X2="20" Y2="25" StrokeThickness="3" />
                     <Line Stroke="Black" X1="20" Y1="25" X2="0" Y2="50" StrokeThickness="3" />

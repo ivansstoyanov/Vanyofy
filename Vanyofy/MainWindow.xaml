@@ -106,7 +106,7 @@
 
 
         <Grid x:Name="AppAlarmSettings" Grid.Row="1">
-            <control:NewAlarmWizard />
+            <control:NewAlarmWizard x:Name="AlarmWizard" />
         </Grid>
 
         

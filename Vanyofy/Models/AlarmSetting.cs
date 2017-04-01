@@ -4,9 +4,7 @@ using System.Collections.Generic;
 namespace Vanyofy.Models
 {
     public class AlarmSetting
-    {
-        public int Id { get; set; }
-         
+    {         
         public string PlaylistUrl { get; set; }
          
         public List<DayOfWeek> Days { get; set; }
@@ -14,8 +12,8 @@ namespace Vanyofy.Models
         public DateTime Time { get; set; }
          
         public bool IncrementVolume { get; set; }
-         
-        public bool Shuffle { get; set; }
+
+        public int IncrementSeconds { get; set; }
 
         public AlarmSetting()
         {
@@ -23,7 +21,7 @@ namespace Vanyofy.Models
             this.Days = new List<DayOfWeek>();
             this.Time = new DateTime();
             this.IncrementVolume = false;
-            this.Shuffle = false;
-        }
+            this.IncrementSeconds = 0;
+    }
     }
 }

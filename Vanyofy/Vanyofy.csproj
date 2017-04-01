@@ -58,11 +58,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Animations\AnimatedPanelBehavior.cs" />
+    <Compile Include="Animations\AnimatedGridColumnBehavior.cs" />
+    <Compile Include="Animations\AnimatedGridRowBehavior.cs" />
     <Compile Include="NewAlarmWizard.xaml.cs">
       <DependentUpon>NewAlarmWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\AlarmsProvider.cs" />
+    <Compile Include="ViewModels\ObservableAlarm.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
