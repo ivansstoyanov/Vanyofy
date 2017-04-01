@@ -7,6 +7,7 @@
         xmlns:control = "clr-namespace:Vanyofy" 
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:commands="clr-namespace:Vanyofy.Commands"
+        xmlns:animations="clr-namespace:Vanyofy.Animations"
         mc:Ignorable="d"
         Closing="Window_Closing" 
         Closed="Window_Closed"
@@ -118,7 +119,16 @@
             <RowDefinition x:Name="AppAlarmSettingsRow"  Height="100" />
             <RowDefinition x:Name="AppAlarmsListRow" Height="*" />
         </Grid.RowDefinitions>
-        
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="AppAlarmSettingsRow" Storyboard.TargetProperty="(animations:AnimatedGridRowBehavior.AnimatedHeight)"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
+
         <Grid x:Name="AppTitleBar" MouseDown="Window_MouseDown" Width="410" HorizontalAlignment="Left" Background="#333">
             <Border BorderThickness="0,0,0,2" BorderBrush="Orange" />
             <DockPanel x:Name="RootWindow">
@@ -186,8 +196,8 @@
             </tb:TaskbarIcon>
         </Grid>
 
-        
-        <Grid x:Name="AppAlarmSettings" Grid.Row="1">            
+
+        <Grid x:Name="AppAlarmSettings" Grid.Row="1" Background="#333">
 
         </Grid>
 

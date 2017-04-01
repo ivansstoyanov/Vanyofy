@@ -1,8 +1,9 @@
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\obj\Debug\SpotifyService.dll
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\obj\Debug\SpotifyService.pdb
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\SpotifyService.dll
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\SpotifyService.pdb
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\Newtonsoft.Json.dll
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\SpotifyAPI.dll
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\Newtonsoft.Json.xml
-C:\Users\ivans\Documents\Visual Studio 2017\Projects\Vanyofy\SpotifyService\bin\Debug\SpotifyAPI.xml
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\SpotifyService.dll
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\SpotifyService.pdb
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\Newtonsoft.Json.dll
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\SpotifyAPI.dll
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\Newtonsoft.Json.xml
+C:\work\me\Vanyofy\SpotifyService\bin\Debug\SpotifyAPI.xml
+C:\work\me\Vanyofy\SpotifyService\obj\Debug\SpotifyConnector.csprojResolveAssemblyReference.cache
+C:\work\me\Vanyofy\SpotifyService\obj\Debug\SpotifyService.dll
+C:\work\me\Vanyofy\SpotifyService\obj\Debug\SpotifyService.pdb

@@ -1,21 +1,14 @@
-﻿using SpotifyAPI.Local;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Vanyofy.Animations;
 using Vanyofy.Models;
 
 namespace Vanyofy
@@ -51,13 +44,32 @@ namespace Vanyofy
             Alarm testA = this.AlarmsObservableList[0];
 
 
-            DateTime alarmStart = DateTime.Now.AddSeconds(20); // new DateTime(2017, 3, 29, 19, 14, 0);
 
-            var startinterval = alarmStart.AddSeconds(-7) - DateTime.Now;
-            var interval = TimeSpan.FromSeconds(10);//TimeSpan.FromDays(1); // 86400
+            //todo N.B.
+            //if now time is bigger, add one day;
 
-            // TODO: Add a CancellationTokenSource and supply the token here instead of None.
-            //RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);  
+            //DateTime alarmStart = DateTime.Now.AddSeconds(20); // new DateTime(2017, 3, 29, 19, 14, 0);
+
+            //var startinterval = alarmStart.AddSeconds(-7) - DateTime.Now;
+            //var interval = TimeSpan.FromSeconds(30);//TimeSpan.FromDays(1); // 86400
+
+            //// TODO: Add a CancellationTokenSource and supply the token here instead of None.
+            //RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);
+
+
+
+            ////////morning test
+            ////DateTime alarmStart = DateTime.Now; // new DateTime(2017, 3, 29, 19, 14, 0);
+            ////TimeSpan ts = new TimeSpan(9, 20, 0);
+            ////alarmStart = alarmStart.Date + ts;
+            //////todo
+            //////if now time is bigger, add one day;
+            
+            ////var startinterval = alarmStart - DateTime.Now;
+            ////var interval = TimeSpan.FromDays(1);//TimeSpan.FromDays(1); // 86400
+
+            ////// TODO: Add a CancellationTokenSource and supply the token here instead of None.
+            ////RunPeriodicAsync(() => AlarmExecute(testA), startinterval, interval, CancellationToken.None, testA);
         }
 
 
@@ -141,7 +153,7 @@ namespace Vanyofy
             DayOfWeek today = DateTime.Now.DayOfWeek;
             if (!currentAlarm.Settings.Days.Contains(today))
             {
-                return;
+                //return;
             }
 
             //start alarm
@@ -150,12 +162,17 @@ namespace Vanyofy
 
         private void StartAlarm(Alarm alarm)
         {
-            //SpotifyLocalAPI spotifyLocalAPI = new SpotifyLocalAPI(50);
-            //if (!spotifyLocalAPI.Connect())
-            //{
-            //    //Program.FailureHandling(inputArguments, null, true);
-            //}
-            //spotifyLocalAPI.PlayURL("https://open.spotify.com/user/doublejmusicltd/playlist/6ChXRsZP7VVQd0LpTcca6P", "");
+            SpotifyConnector.SpotifyConnector sc = new SpotifyConnector.SpotifyConnector();
+
+            try
+            {
+                sc.StartSpotify();
+                sc.StartPlaylist();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -220,8 +237,20 @@ namespace Vanyofy
         {
             //this.AlarmsObservableList.Add(new Alarm());
 
+            //this.AppAlarmSettingsRow.Height = new GridLength(100);
 
-
+            if(this.AppAlarmSettingsRow.Height.Value == 0)
+            {
+                var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
+                //anim.Completed += (s, _) => Expanded = false;
+                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
+            }
+            else
+            {
+                var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
+                //anim.Completed += (s, _) => Expanded = false;
+                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
+            }
         }
 
         private void ActivateAlarm(object sender, RoutedEventArgs e)
@@ -254,6 +283,4 @@ namespace Vanyofy
 
         }
     }
-
-    
 }
