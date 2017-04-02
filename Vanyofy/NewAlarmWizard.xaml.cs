@@ -43,6 +43,10 @@ namespace Vanyofy
             CurrentStep = 0;
             ShowFinalStep(false);
             SetStep(CurrentStep);
+
+            //fake animation to fix the first step
+            var anim = new DoubleAnimation(455, (Duration)TimeSpan.FromSeconds(0.01));
+            WizardWrapper.BeginAnimation(AnimatedGridColumnBehavior.AnimatedWidthProperty, anim);
         }
 
         private void SetStep(int index)

@@ -24,6 +24,8 @@ namespace Vanyofy
         {
             //TODO make single executable
 
+            //TODO on icon double click show Vanyofy
+
             //TODO style ON / OFF button and listbox row
             //TODO when on set remaining timer visible
 
@@ -93,19 +95,15 @@ namespace Vanyofy
 
         private void ShowAlarmWizard(Alarm editAlarm = null)
         {
-            //TODO only first step is always with broken animation
-
             if (this.AppAlarmSettingsRow.Height.Value == 0)
             {
                 AlarmWizard.StartOver(editAlarm);
                 var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
-                //anim.Completed += (s, _) => Expanded = false;
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
             }
             else
             {
                 var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
-                //anim.Completed += (s, _) => Expanded = false;
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
             }
         }
