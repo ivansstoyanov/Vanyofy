@@ -20,14 +20,12 @@ namespace Vanyofy
 
         public MainWindow()
         {
-            //TODO make single executable
+            //TODO remove style when hover or selected listbox
 
             //TODO on icon double click show Vanyofy
 
             //TODO style ON / OFF button and listbox row
             //TODO when on set remaining timer visible
-
-            //TODO remove style when hover or selected listbox
 
             InitializeComponent();
             this.AppAlarmSettingsRow.Height = new GridLength(0);

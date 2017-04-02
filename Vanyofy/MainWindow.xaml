@@ -51,7 +51,7 @@
                     <StackPanel>
                         <Image Source="/Icons/home.ico" Width="30" Height="30" />
                     </StackPanel>
-                    <TextBlock HorizontalAlignment="Left" Width="380" FontSize="22" Padding="6,0" Foreground="#eee">Vanyofy</TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Width="260" FontSize="22" Padding="6,0" Foreground="#eee">Vanyofy</TextBlock>
                 </DockPanel>
             </DockPanel>
 
