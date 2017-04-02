@@ -11,9 +11,9 @@ namespace Vanyofy.Commands
         public override void Execute(object parameter)
         {
             GetTaskbarWindow(parameter).Show();
+            GetTaskbarWindow(parameter).WindowState = WindowState.Normal;
             CommandManager.InvalidateRequerySuggested();
         }
-
 
         public override bool CanExecute(object parameter)
         {

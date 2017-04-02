@@ -16,7 +16,7 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        Title="Vanyofy" Height="350" Width="480">    
+        Title="Vanyofy" Height="600" Width="480">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
@@ -59,6 +59,8 @@
             <tb:TaskbarIcon
               x:Name="MyNotifyIcon"
               IconSource="/Icons/home.ico"
+              DoubleClickCommand="{commands:ShowSampleWindowCommand}"
+              DoubleClickCommandParameter="{Binding ElementName=MyNotifyIcon}"
               ToolTipText="Hello Vanyofier">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>

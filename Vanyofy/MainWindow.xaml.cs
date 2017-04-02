@@ -21,9 +21,8 @@ namespace Vanyofy
         public MainWindow()
         {
             //TODO remove style when hover or selected listbox
-
-            //TODO on icon double click show Vanyofy
-
+            //TODO what if scroller ??? (limit it - full version for more alarms : )) )
+            
             //TODO style ON / OFF button and listbox row
             //TODO when on set remaining timer visible
 
