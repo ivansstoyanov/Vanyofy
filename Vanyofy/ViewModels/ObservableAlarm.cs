@@ -42,7 +42,7 @@ namespace Vanyofy.ViewModels
         public ObservableAlarm()
         {
             this.id = null;
-            this.name = "New Alarm";
+            this.name = "Wake me up";
             this.active = false;
             this.notActive = !this.active;
 

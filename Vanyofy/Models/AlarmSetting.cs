@@ -12,6 +12,10 @@ namespace Vanyofy.Models
         public int Hour { get; set; }
 
         public int Minutes { get; set; }
+
+        public bool isSingle { get; set; }
+
+        public DateTime startDate { get; set; }
         
         public bool IncrementVolume { get; set; }
 
@@ -25,6 +29,10 @@ namespace Vanyofy.Models
             this.Minutes = 40;
             this.IncrementVolume = false;
             this.IncrementSeconds = 0;
+
+            //TODO if single alarm
+            this.startDate = DateTime.Now;
+            this.isSingle = false;
     }
     }
 }

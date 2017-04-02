@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Vanyofy.Animations;
 using Vanyofy.Models;
 using Vanyofy.Settings;
@@ -21,10 +20,10 @@ namespace Vanyofy
         public MainWindow()
         {
             //TODO remove style when hover or selected listbox
-            //TODO what if scroller ??? (limit it - full version for more alarms : )) )
-            
-            //TODO style ON / OFF button and listbox row
-            //TODO when on set remaining timer visible
+
+            //TODO when on, set remaining timer visible
+
+            //TODO increase volume
 
             InitializeComponent();
             this.AppAlarmSettingsRow.Height = new GridLength(0);
@@ -50,12 +49,24 @@ namespace Vanyofy
 
             AlarmsList.ItemsSource = this.AlarmsObservableList;
             this.AlarmsList.SelectedItem = null;
+            this.CreateNewButtonOpened.Visibility = Visibility.Visible;
+            this.CreateNewButtonClosed.Visibility = Visibility.Collapsed;
 
             //TODO animation when refreshing
         }
 
         public void Handler_WizardCompleted(object sender, EventArgs e)
         {
+            if (this.AlarmsObservableList.Count >= 10)
+            {
+                MessageBox.Show("You can only add 10 alarms in this version.");
+
+                ShowAlarmWizard();
+                RefreshAlarmsData();
+
+                return;
+            }
+
             var wizard = (NewAlarmWizard)sender;
             var newAlarm = wizard.WizardAlarm.GetCurrentAlarm();
 
@@ -81,8 +92,6 @@ namespace Vanyofy
         /// <param name="e"></param>
         private void AddNewAlarm(object sender, RoutedEventArgs e)
         {
-            //TODO change button style /\
-
             ShowAlarmWizard();
         }
 
@@ -90,31 +99,19 @@ namespace Vanyofy
         {
             if (this.AppAlarmSettingsRow.Height.Value == 0)
             {
-                var noAlarmsTemplate = AlarmsList.Template.FindName("NoAlarmsTemplate", AlarmsList) as StackPanel;
-                var addAlarmTitle = AlarmsList.Template.FindName("AddAlarmTooltip", AlarmsList) as TextBlock;
-                if (addAlarmTitle != null && addAlarmTitle != null)
-                {
-                    noAlarmsTemplate.Height = 50;
-                    addAlarmTitle.Visibility = Visibility.Collapsed;
-                }
+                this.CreateNewButtonOpened.Visibility = Visibility.Collapsed;
+                this.CreateNewButtonClosed.Visibility = Visibility.Visible;
 
                 AlarmWizard.StartOver(editAlarm);
-                var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
+                var anim = new DoubleAnimation(90, (Duration)TimeSpan.FromSeconds(0.25));
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
             }
             else
             {
+                this.CreateNewButtonOpened.Visibility = Visibility.Visible;
+                this.CreateNewButtonClosed.Visibility = Visibility.Collapsed;
+
                 var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
-                anim.Completed += (s, _) =>
-                {
-                    var noAlarmsTemplate = AlarmsList.Template.FindName("NoAlarmsTemplate", AlarmsList) as StackPanel;
-                    var addAlarmTitle = AlarmsList.Template.FindName("AddAlarmTooltip", AlarmsList) as TextBlock;
-                    if (addAlarmTitle != null && addAlarmTitle != null)
-                    {
-                        noAlarmsTemplate.Height = 100;
-                        addAlarmTitle.Visibility = Visibility.Visible;
-                    }
-                };
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
             }
         }
@@ -123,6 +120,7 @@ namespace Vanyofy
         {
             var parent = ((Grid)((Button)sender).Parent).Tag;
             var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+            var currentAlarmIndex = this.AlarmsObservableList.IndexOf(currentAlarm);
 
             var myValue = ((Button)sender).Tag;
             if (myValue.ToString() == "true")
@@ -138,12 +136,22 @@ namespace Vanyofy
                 AlarmsProvider ap = new AlarmsProvider();
                 ap.SetActive(currentAlarm);
 
+                var alarms = ap.GetAll();
+                this.AlarmsObservableList = new ObservableCollection<Alarm>();
+                foreach (var a in alarms)
+                {
+                    this.AlarmsObservableList.Add(a);
+                }
+                AlarmsList.ItemsSource = this.AlarmsObservableList;
+                this.AlarmsList.SelectedItem = null;
+
                 this.AlarmScheduler.ScheduleAlarm(currentAlarm);
             }
             else
             {
                 currentAlarm.Active = false;
                 currentAlarm.NotActive = true;
+                AlarmsList.ItemsSource = this.AlarmsObservableList;
 
                 var activeButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetActive"));
                 activeButt.Visibility = Visibility.Hidden;
@@ -152,6 +160,15 @@ namespace Vanyofy
 
                 AlarmsProvider ap = new AlarmsProvider();
                 ap.SetActive(currentAlarm);
+
+                var alarms = ap.GetAll();
+                this.AlarmsObservableList = new ObservableCollection<Alarm>();
+                foreach (var a in alarms)
+                {
+                    this.AlarmsObservableList.Add(a);
+                }
+                AlarmsList.ItemsSource = this.AlarmsObservableList;
+                this.AlarmsList.SelectedItem = null;
 
                 this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
             }
@@ -243,9 +260,9 @@ namespace Vanyofy
         void s_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var mouse = Mouse.DirectlyOver;
-            var currentObj = mouse as Line;
+            var currentObj = mouse as Image;
 
-            if (mouse is Line && currentObj.Tag != null && currentObj.Tag.ToString() == "draggable" && sender is ListBoxItem)
+            if (currentObj != null && currentObj.Source.ToString().EndsWith("activity-feed-48.png"))
             {
                 Mouse.OverrideCursor = Cursors.SizeAll;
 

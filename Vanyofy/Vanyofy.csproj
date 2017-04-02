@@ -150,7 +150,26 @@
   <ItemGroup>
     <Resource Include="Icons\Close.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\clock-4-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\time-8-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\delete-48.png" />
+    <Resource Include="Icons\edit-3-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\activity-feed-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\checkmark-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\arrow-24-48.png" />
+    <Resource Include="Icons\arrow-88-48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>

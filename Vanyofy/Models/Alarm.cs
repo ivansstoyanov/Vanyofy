@@ -19,7 +19,7 @@ namespace Vanyofy.Models
         public Alarm()
         {
             this.Id = null;
-            this.Name = "New Alarm";
+            this.Name = "Wake me up";
             this.Active = false;
             this.NotActive = !this.Active;
             this.Settings = new AlarmSetting();

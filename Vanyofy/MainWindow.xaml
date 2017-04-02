@@ -16,14 +16,14 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        Title="Vanyofy" Height="600" Width="480">
+        Title="Vanyofy" Height="600" Width="500">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="AppAppTitleBar" Height="35" />
+            <RowDefinition x:Name="AppAppTitleBar" Height="45" />
             <RowDefinition x:Name="AppAlarmSettingsRow" Height="100" />
             <RowDefinition x:Name="AppAlarmsListRow" Height="*" />
         </Grid.RowDefinitions>
@@ -37,21 +37,45 @@
             </EventTrigger>
         </Grid.Triggers>
 
-        <Grid x:Name="AppTitleBar" MouseDown="Window_MouseDown" Width="410" HorizontalAlignment="Left" Background="#333">
-            <Border BorderThickness="0,0,0,2" BorderBrush="Orange" />
+        <Grid x:Name="AppTitleBar" MouseDown="Window_MouseDown" Width="410" HorizontalAlignment="Left" Background="#EF6C00">
             <DockPanel x:Name="RootWindow">
                 <DockPanel x:Name="TitleBar" Width="410">
-                    <Button x:Name="CloseButton" Style="{StaticResource InformButton}" DockPanel.Dock="Right" Width="30" Height="30" Click="CloseButton_Click">
+                    <Button x:Name="CloseButton" Style="{StaticResource OrangeButton}" BorderThickness="0" DockPanel.Dock="Right" Click="CloseButton_Click">
                         <Grid>
-                            <Line Stroke="Black" X1="0" Y1="0" X2="20" Y2="20" StrokeThickness="3" />
-                            <Line Stroke="Black" X1="20" Y1="0" X2="0" Y2="20" StrokeThickness="3" />
+                            <Line Stroke="White" X1="1" Y1="1" X2="21" Y2="21" StrokeThickness="4" />
+                            <Line Stroke="White" X1="21" Y1="1" X2="1" Y2="21" StrokeThickness="4" />
                         </Grid>
                     </Button>
-                    <Button Style="{StaticResource InformButton}" DockPanel.Dock="Right" Click="AddNewAlarm">(0) New \/</Button>
+                    <Button Style="{StaticResource OrangeButton}" DockPanel.Dock="Right" Click="AddNewAlarm">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.RowSpan="2"
+                                Width="30" Height="30"
+                                       Source="/Icons/time-8-48.png" />
+                            <TextBlock HorizontalAlignment="Center" Grid.Column="1" Foreground="white" FontSize="15" FontWeight="Bold">
+                                New
+                            </TextBlock>
+                            <Grid x:Name="CreateNewButtonOpened" Grid.Row="1" Grid.Column="1">
+                                <Line Stroke="White" X1="5" Y1="3" X2="20" Y2="13" StrokeThickness="3" />
+                                <Line Stroke="White" X1="20" Y1="13" X2="40" Y2="3" StrokeThickness="3" />
+                            </Grid>
+                            <Grid x:Name="CreateNewButtonClosed" Visibility="Collapsed" Grid.Row="1" Grid.Column="1">
+                                <Line Stroke="White" X1="5" Y1="13" X2="20" Y2="3" StrokeThickness="3" />
+                                <Line Stroke="White" X1="20" Y1="3" X2="40" Y2="13" StrokeThickness="3" />
+                            </Grid>
+                        </Grid>
+                    </Button>
                     <StackPanel>
-                        <Image Source="/Icons/home.ico" Width="30" Height="30" />
+                        <Image Source="/Icons/home.ico" Width="44" Height="44" />
                     </StackPanel>
-                    <TextBlock HorizontalAlignment="Left" Width="260" FontSize="22" Padding="6,0" Foreground="#eee">Vanyofy</TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" FontSize="26" Padding="6,0" Foreground="white">Vanyofy</TextBlock>
                 </DockPanel>
             </DockPanel>
 
@@ -154,41 +178,38 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid x:Name="AlarmSettings" Tag="{Binding Id}">
+                    <DataTemplate>                        
+                        <Grid x:Name="AlarmSettings" Tag="{Binding Id}" Height="40">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="405" />
+                                <ColumnDefinition Width="411" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Grid Background="Tomato" Tag="{Binding Id}">
+                            <Grid x:Name="ItemRow" Tag="{Binding Id}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="25" />
-                                    <ColumnDefinition Width="340" />
+                                    <ColumnDefinition Width="345" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Grid Cursor="SizeAll" Margin="5">
-                                    <Line Stroke="Gray" X1="0" Y1="3" X2="20" Y2="3" StrokeThickness="3" Tag="draggable" />
-                                    <Line Stroke="Black" X1="0" Y1="6" X2="20" Y2="6" StrokeThickness="3" Tag="draggable" />
-                                    <Line Stroke="Gray" X1="0" Y1="9" X2="20" Y2="9" StrokeThickness="3" Tag="draggable" />
-                                    <Line Stroke="Black" X1="0" Y1="12" X2="20" Y2="12" StrokeThickness="3" Tag="draggable" />
-                                    <Line Stroke="Gray" X1="0" Y1="15" X2="20" Y2="15" StrokeThickness="3" Tag="draggable" />
-                                </Grid>
+                                <Image Cursor="SizeAll"
+                                       Margin="4,1,0,0"
+                                        Width="18" Height="18"
+                                       Source="/Icons/activity-feed-48.png" />
 
-                                <Label Grid.Column="1" Content="{Binding Name}" />
+                                <Label Grid.Column="1" VerticalAlignment="Bottom" FontSize="16" Content="{Binding Name}" />
                                 
                                 <Button Grid.Column="2" x:Name="SetActive"
-                                    Style="{StaticResource InformButton}" 
+                                    Style="{StaticResource OrangeSmallButton}" 
                                     Visibility="{Binding Active, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                    Width="30" Height="30" 
+                                    Width="40" Height="40" 
                                     Tag="false" Click="ActivateAlarmClick">
                                     ON
                                 </Button>
                                 <Button Grid.Column="2" x:Name="SetNotActive"
-                                    Style="{StaticResource InformButton}" 
+                                    Style="{StaticResource OrangeSmallButton}" 
                                     Visibility="{Binding NotActive, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                    Width="30" Height="30"
+                                    Width="40" Height="40"
                                     Tag="true" Click="ActivateAlarmClick">
                                     OFF
                                 </Button>
@@ -203,24 +224,34 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Button Grid.Column="0" x:Name="EditCurrent"
-                                    Style="{StaticResource InformButton}" 
-                                    Width="30" Height="30" 
+                                    Style="{StaticResource OrangeSmallButton}" 
+                                        Margin="2,0,2,0"
+                                    Width="40" Height="40" 
                                     Click="EditAlarmClick">
-                                    <Grid>
-                                        <Line Stroke="Black" X1="10" Y1="0" X2="10" Y2="20" StrokeThickness="3" />
-                                    </Grid>
+                                    <Image Grid.RowSpan="2"
+                                        Width="18" Height="18"
+                                       Source="/Icons/edit-3-48.png" />
                                 </Button>
                                 <Button Grid.Column="1" x:Name="DeleteCurrent"
-                                    Style="{StaticResource InformButton}"                                     
-                                    Width="30" Height="30"
+                                    Style="{StaticResource OrangeSmallButton}"                                     
+                                    Width="40" Height="40"
                                     Click="DeleteAlarmClick">
-                                    <Grid>
-                                        <Line Stroke="Black" X1="20" Y1="10" X2="0" Y2="10" StrokeThickness="3"  />
-                                    </Grid>
+                                    <Image Grid.RowSpan="2"
+                                        Width="20" Height="20"
+                                       Source="/Icons/delete-48.png" />
                                 </Button>
                             </Grid>
-
                         </Grid>
+                        
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Active}" Value="True">
+                                <Setter TargetName="ItemRow" Property="Background" Value="#AEEA00"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Active}" Value="False">
+                                <Setter TargetName="ItemRow" Property="Background" Value="#D84315"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

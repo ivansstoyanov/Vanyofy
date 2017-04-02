@@ -105,6 +105,12 @@ namespace Vanyofy
 
         private void Complate_Click(object sender, RoutedEventArgs e)
         {
+            if (WizardAlarm.PlaylistUrl.Length == 0)
+            {
+                MessageBox.Show("Type a url first");
+                return;
+            }
+
             RaiseCompleteEvent();
         }
 
