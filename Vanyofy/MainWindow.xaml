@@ -111,6 +111,24 @@
                      Background="Transparent" BorderBrush="Transparent" 
                      ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      SelectedItem="{Binding Path=SelectedVersion}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
+                <ListBox.Style>
+                    <Style TargetType="ListBox" >
+                        <Style.Triggers>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <StackPanel x:Name="NoAlarmsTemplate" Width="410" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#333">
+                                                <TextBlock x:Name="AddAlarmTooltip" HorizontalAlignment="Left" FontSize="22" Padding="6,0" Foreground="#eee">^add alarm</TextBlock>
+                                                <TextBlock HorizontalAlignment="Center"  FontSize="22" Padding="6,0" Foreground="#eee">you don't have any alarms yet</TextBlock>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Margin" Value="0" />

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -30,8 +28,6 @@ namespace Vanyofy
             //TODO when on set remaining timer visible
 
             //TODO remove style when hover or selected listbox
-
-            //TODO when no alarms???
 
             InitializeComponent();
             this.AppAlarmSettingsRow.Height = new GridLength(0);
@@ -97,6 +93,14 @@ namespace Vanyofy
         {
             if (this.AppAlarmSettingsRow.Height.Value == 0)
             {
+                var noAlarmsTemplate = AlarmsList.Template.FindName("NoAlarmsTemplate", AlarmsList) as StackPanel;
+                var addAlarmTitle = AlarmsList.Template.FindName("AddAlarmTooltip", AlarmsList) as TextBlock;
+                if (addAlarmTitle != null && addAlarmTitle != null)
+                {
+                    noAlarmsTemplate.Height = 50;
+                    addAlarmTitle.Visibility = Visibility.Collapsed;
+                }
+
                 AlarmWizard.StartOver(editAlarm);
                 var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
@@ -104,6 +108,16 @@ namespace Vanyofy
             else
             {
                 var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
+                anim.Completed += (s, _) =>
+                {
+                    var noAlarmsTemplate = AlarmsList.Template.FindName("NoAlarmsTemplate", AlarmsList) as StackPanel;
+                    var addAlarmTitle = AlarmsList.Template.FindName("AddAlarmTooltip", AlarmsList) as TextBlock;
+                    if (addAlarmTitle != null && addAlarmTitle != null)
+                    {
+                        noAlarmsTemplate.Height = 100;
+                        addAlarmTitle.Visibility = Visibility.Visible;
+                    }
+                };
                 AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
             }
         }
@@ -185,7 +199,9 @@ namespace Vanyofy
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Application.Current.Shutdown();
+            //TODO on release set this
+            //this.WindowState = WindowState.Minimized;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
