@@ -101,19 +101,16 @@ namespace Vanyofy
 
         private void Complate_Click(object sender, RoutedEventArgs e)
         {
-            var a = this.WizardAlarm.TimeMinutes;
-            //CurrentStep++;
-            //this.SetStep(CurrentStep);
-            FunctionThatRaisesEvent();
+            RaiseCompleteEvent();
         }
 
         public event EventHandler WizardCompleted;
-
-        private void FunctionThatRaisesEvent()
+        private void RaiseCompleteEvent()
         {
-            //Null check makes sure the main page is attached to the event
             if (this.WizardCompleted != null)
+            {
                 this.WizardCompleted(this, new EventArgs());
+            }
         }
 
 

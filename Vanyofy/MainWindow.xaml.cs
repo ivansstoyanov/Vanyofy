@@ -16,23 +16,30 @@ using Vanyofy.Settings;
 namespace Vanyofy
 {
     public partial class MainWindow : Window
-    {
-        public void Handler_WizardCompleted(object sender, EventArgs e)
+    {        
+        public ObservableCollection<Alarm> AlarmsObservableList = null;
+        AlarmScheduler.AlarmScheduler AlarmScheduler = null;
+
+        public MainWindow()
         {
-            var wizard = (NewAlarmWizard)sender;
-            var newAlarm = wizard.WizardAlarm.GetCurrentAlarm();
+            //TODO make single executable
 
-            if (newAlarm.Id != null)
-            {
-                this.AlarmScheduler.CheckForCancellationToken(newAlarm.Id.Value);
-            }
+            //TODO style ON / OFF button and listbox row
+            //TODO when on set remaining timer visible
 
-            AlarmsProvider ap = new AlarmsProvider();
-            ap.Add(newAlarm);
+            //TODO remove style when hover or selected listbox
 
-            ShowAlarmWizard();
+            //TODO when no alarms???
+
+            InitializeComponent();
+            this.AppAlarmSettingsRow.Height = new GridLength(0);
+            this.AlarmWizard.WizardCompleted += new EventHandler(Handler_WizardCompleted);
+
+            this.AlarmScheduler = new AlarmScheduler.AlarmScheduler();
 
             RefreshAlarmsData();
+
+            this.AlarmScheduler.ScheduleAllAlarms(this.AlarmsObservableList);
         }
 
         public void RefreshAlarmsData()
@@ -52,27 +59,170 @@ namespace Vanyofy
             //TODO animation when refreshing
         }
 
-        public ObservableCollection<Alarm> AlarmsObservableList = null;
-        AlarmScheduler.AlarmScheduler AlarmScheduler = null;
-
-        public MainWindow()
+        public void Handler_WizardCompleted(object sender, EventArgs e)
         {
-            //TODO remove style when hover or selected listbox
+            var wizard = (NewAlarmWizard)sender;
+            var newAlarm = wizard.WizardAlarm.GetCurrentAlarm();
 
-            //TODO when no alarms???
+            if (newAlarm.Id != null)
+            {
+                this.AlarmScheduler.CheckForCancellationToken(newAlarm.Id.Value);
+            }
 
-            InitializeComponent();
-            this.AppAlarmSettingsRow.Height = new GridLength(0);
-            this.AlarmWizard.WizardCompleted += new EventHandler(Handler_WizardCompleted);
+            AlarmsProvider ap = new AlarmsProvider();
+            ap.Add(newAlarm);
 
-            this.AlarmScheduler = new AlarmScheduler.AlarmScheduler();
+            ShowAlarmWizard();
 
             RefreshAlarmsData();
-
-            this.AlarmScheduler.ScheduleAllAlarms(this.AlarmsObservableList);
         }
 
 
+
+        /// <summary>
+        /// Buttons Area
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNewAlarm(object sender, RoutedEventArgs e)
+        {
+            //TODO change button style /\
+
+            ShowAlarmWizard();
+        }
+
+        private void ShowAlarmWizard(Alarm editAlarm = null)
+        {
+            //TODO only first step is always with broken animation
+
+            if (this.AppAlarmSettingsRow.Height.Value == 0)
+            {
+                AlarmWizard.StartOver(editAlarm);
+                var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
+                //anim.Completed += (s, _) => Expanded = false;
+                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
+            }
+            else
+            {
+                var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
+                //anim.Completed += (s, _) => Expanded = false;
+                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
+            }
+        }
+
+        private void ActivateAlarmClick(object sender, RoutedEventArgs e)
+        {
+            var parent = ((Grid)((Button)sender).Parent).Tag;
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+
+            var myValue = ((Button)sender).Tag;
+            if (myValue.ToString() == "true")
+            {
+                currentAlarm.Active = true;
+                currentAlarm.NotActive = false;
+
+                var activeButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetActive"));
+                activeButt.Visibility = Visibility.Visible;
+                var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
+                notActiveButt.Visibility = Visibility.Hidden;
+
+                AlarmsProvider ap = new AlarmsProvider();
+                ap.SetActive(currentAlarm);
+
+                this.AlarmScheduler.ScheduleAlarm(currentAlarm);
+            }
+            else
+            {
+                currentAlarm.Active = false;
+                currentAlarm.NotActive = true;
+
+                var activeButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetActive"));
+                activeButt.Visibility = Visibility.Hidden;
+                var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
+                notActiveButt.Visibility = Visibility.Visible;
+
+                AlarmsProvider ap = new AlarmsProvider();
+                ap.SetActive(currentAlarm);
+
+                this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
+            }
+        }
+
+        private void EditAlarmClick(object sender, RoutedEventArgs e)
+        {
+            var parent = ((Grid)((Button)sender).Parent).Tag;
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+
+            ShowAlarmWizard(currentAlarm);
+        }
+
+        private void DeleteAlarmClick(object sender, RoutedEventArgs e)
+        {
+            var parent = ((Grid)((Button)sender).Parent).Tag;
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+
+            this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
+
+            AlarmsProvider ap = new AlarmsProvider();
+            ap.Delete(currentAlarm.Id.Value);
+
+            RefreshAlarmsData();
+        }
+
+
+
+        /// <summary>
+        /// Window behavior Area
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.AlarmsList.SelectedItem = null;
+                Application.Current.MainWindow.DragMove();
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.WindowState = WindowState.Minimized;
+            this.ShowInTaskbar = false;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            MyNotifyIcon.Dispose();
+
+            base.OnClosing(e);
+        }
+
+
+
+        /// <summary>
+        /// Draggable area
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnGiveFeedback(System.Windows.GiveFeedbackEventArgs e)
         {
             Mouse.SetCursor(Cursors.Hand);
@@ -139,151 +289,6 @@ namespace Vanyofy
 
             AlarmsProvider ap = new AlarmsProvider();
             ap.UpdateOrder(newOrder);
-        }
-
-
-
-
-
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                this.AlarmsList.SelectedItem = null;
-                Application.Current.MainWindow.DragMove();
-            }
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            //TODO remove this on release
-            Application.Current.Shutdown();
-            //this.WindowState = WindowState.Minimized;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            this.WindowState = WindowState.Minimized;
-            this.ShowInTaskbar = false;
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        protected override void OnStateChanged(EventArgs e)
-        {
-            if (WindowState == WindowState.Minimized)
-            {
-                this.Hide();
-            }
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            //clean up notifyicon (would otherwise stay open until application finishes)
-            MyNotifyIcon.Dispose();
-
-            base.OnClosing(e);
-        }
-
-        private void MyNotifyIcon_TrayContextMenuOpen(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //OpenEventCounter.Text = (int.Parse(OpenEventCounter.Text) + 1).ToString();
-        }
-
-        private void MyNotifyIcon_PreviewTrayContextMenuOpen(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //marking the event as handled suppresses the context menu
-            //e.Handled = (bool)SuppressContextMenu.IsChecked;
-
-            //PreviewOpenEventCounter.Text = (int.Parse(PreviewOpenEventCounter.Text) + 1).ToString();
-        }
-
-        private void AddNewAlarm(object sender, RoutedEventArgs e)
-        {
-            //TODO change button style /\
-
-            ShowAlarmWizard();
-        }
-
-        private void ShowAlarmWizard(Alarm editAlarm = null)
-        {
-            if (this.AppAlarmSettingsRow.Height.Value == 0)
-            {
-                AlarmWizard.StartOver(editAlarm);
-                var anim = new DoubleAnimation(100, (Duration)TimeSpan.FromSeconds(0.25));
-                //anim.Completed += (s, _) => Expanded = false;
-                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
-            }
-            else
-            {
-                var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.25));
-                //anim.Completed += (s, _) => Expanded = false;
-                AppAlarmSettingsRow.BeginAnimation(AnimatedGridRowBehavior.AnimatedHeightProperty, anim);
-            }
-        }
-
-        private void ActivateAlarmClick(object sender, RoutedEventArgs e)
-        {
-            var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
-
-            var myValue = ((Button)sender).Tag;
-            if (myValue.ToString() == "true")
-            {
-                currentAlarm.Active = true;
-                currentAlarm.NotActive = false;
-
-                var activeButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetActive"));
-                activeButt.Visibility = Visibility.Visible;
-                var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
-                notActiveButt.Visibility = Visibility.Hidden;
-                
-                AlarmsProvider ap = new AlarmsProvider();
-                ap.SetActive(currentAlarm);
-
-                this.AlarmScheduler.ScheduleAlarm(currentAlarm);
-            }
-            else
-            {
-                currentAlarm.Active = false;
-                currentAlarm.NotActive = true;
-
-                var activeButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetActive"));
-                activeButt.Visibility = Visibility.Hidden;
-                var notActiveButt = (Button)(((Grid)((Button)sender).Parent).FindName("SetNotActive"));
-                notActiveButt.Visibility = Visibility.Visible;
-                
-                AlarmsProvider ap = new AlarmsProvider();
-                ap.SetActive(currentAlarm);
-
-                this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
-            }
-        }
-
-        private void EditAlarmClick(object sender, RoutedEventArgs e)
-        {
-            var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
-
-            ShowAlarmWizard(currentAlarm);
-        }
-
-        private void DeleteAlarmClick(object sender, RoutedEventArgs e)
-        {
-            var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
-            
-            this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
-
-            AlarmsProvider ap = new AlarmsProvider();
-            ap.Delete(currentAlarm.Id.Value);
-
-            RefreshAlarmsData();
         }
     }
 }

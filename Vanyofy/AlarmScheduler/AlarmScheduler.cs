@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,38 +15,6 @@ namespace Vanyofy.AlarmScheduler
         public AlarmScheduler()
         {
             this.cancellationTokensDictionary = new Dictionary<Guid, List<CancellationTokenSource>>();
-        }
-
-        public CancellationTokenSource CheckForCancellationToken(Guid id)
-        {
-            var newCancelSource = new CancellationTokenSource();
-            
-            if (cancellationTokensDictionary.ContainsKey(id))
-            {
-                foreach (var token in cancellationTokensDictionary[id])
-                {
-                    token.Cancel();
-                }
-
-                cancellationTokensDictionary[id].Add(newCancelSource);
-            }
-            else
-            {
-                cancellationTokensDictionary.Add(id, new List<CancellationTokenSource>() { newCancelSource });
-            }
-
-            return newCancelSource;
-        }
-
-        public void CancelAllTokens()
-        {
-            foreach (var key in this.cancellationTokensDictionary.Keys)
-            {
-                foreach (var token in cancellationTokensDictionary[key])
-                {
-                    token.Cancel();
-                }
-            }
         }
 
         public void ScheduleAllAlarms(ObservableCollection<Alarm> alarms)
@@ -72,7 +38,7 @@ namespace Vanyofy.AlarmScheduler
 
             if (alarmStart < DateTime.Now)
             {
-                alarmStart.AddDays(1);
+                alarmStart = alarmStart.AddDays(1);
             }
 
             var startInterval = alarmStart - DateTime.Now;
@@ -123,11 +89,43 @@ namespace Vanyofy.AlarmScheduler
             try
             {
                 sc.StartSpotify();
-                sc.StartPlaylist();
+                sc.StartPlaylist(alarm.Settings.PlaylistUrl);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        public CancellationTokenSource CheckForCancellationToken(Guid id)
+        {
+            var newCancelSource = new CancellationTokenSource();
+
+            if (cancellationTokensDictionary.ContainsKey(id))
+            {
+                foreach (var token in cancellationTokensDictionary[id])
+                {
+                    token.Cancel();
+                }
+
+                cancellationTokensDictionary[id].Add(newCancelSource);
+            }
+            else
+            {
+                cancellationTokensDictionary.Add(id, new List<CancellationTokenSource>() { newCancelSource });
+            }
+
+            return newCancelSource;
+        }
+
+        public void CancelAllTokens()
+        {
+            foreach (var key in this.cancellationTokensDictionary.Keys)
+            {
+                foreach (var token in cancellationTokensDictionary[key])
+                {
+                    token.Cancel();
+                }
             }
         }
     }
