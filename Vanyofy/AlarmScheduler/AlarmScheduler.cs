@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Vanyofy.Models;
+using Vanyofy.Logging;
+using System.ComponentModel;
 
 namespace Vanyofy.AlarmScheduler
 {
@@ -17,7 +18,7 @@ namespace Vanyofy.AlarmScheduler
             this.cancellationTokensDictionary = new Dictionary<Guid, List<CancellationTokenSource>>();
         }
 
-        public void ScheduleAllAlarms(ObservableCollection<Alarm> alarms)
+        public void ScheduleAllAlarms(BindingList<Alarm> alarms)
         {
             foreach (var alarm in alarms)
             {
@@ -26,7 +27,7 @@ namespace Vanyofy.AlarmScheduler
         }
 
         public void ScheduleAlarm(Alarm alarm)
-        {
+        {            
             if (alarm.NotActive)
             {
                 return;
@@ -41,8 +42,10 @@ namespace Vanyofy.AlarmScheduler
                 alarmStart = alarmStart.AddDays(1);
             }
 
+            Logger.Log.Info("alarm sheduled " + alarm.Name);
+
             var startInterval = alarmStart - DateTime.Now;
-            var interval = TimeSpan.FromDays(1);
+            var interval = TimeSpan.FromSeconds(86400);
 
             var newCancelSource = CheckForCancellationToken(alarm.Id.Value);
             RunPeriodicAsync(() => AlarmExecute(alarm), startInterval, interval, newCancelSource.Token);
@@ -52,6 +55,7 @@ namespace Vanyofy.AlarmScheduler
         {
             if (startAfter > TimeSpan.Zero)
             {
+                Logger.Log.Info("alarm start " + alarm.Name);
                 await Task.Delay(startAfter, token);
             }
 
@@ -61,6 +65,7 @@ namespace Vanyofy.AlarmScheduler
 
                 if (interval > TimeSpan.Zero)
                 {
+                    Logger.Log.Info("alarm start " + alarm.Name);
                     await Task.Delay(interval, token);
                 }
             }

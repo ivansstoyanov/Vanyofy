@@ -40,6 +40,9 @@
     <StartupObject>Vanyofy.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web.Extensions" />
@@ -64,6 +67,7 @@
     <Compile Include="AlarmScheduler\AlarmScheduler.cs" />
     <Compile Include="Animations\AnimatedGridColumnBehavior.cs" />
     <Compile Include="Animations\AnimatedGridRowBehavior.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="NewAlarmWizard.xaml.cs">
       <DependentUpon>NewAlarmWizard.xaml</DependentUpon>
     </Compile>
@@ -123,6 +127,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
