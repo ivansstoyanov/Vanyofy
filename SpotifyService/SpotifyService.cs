@@ -35,30 +35,38 @@ namespace SpotifyConnector
 
         public void StartPlaylist(string url)
         {
-            SpotifyLocalAPI spotifyLocalAPI = new SpotifyLocalAPI(50);
-
-            if (!spotifyLocalAPI.Connect())
-            {
-                throw new Exception("Cannot connect to Spotify");
-            }
-
             int numberOfTries = 12;
             for (int i = numberOfTries - 1; i >= 0; i--)
             {
-                if (!spotifyLocalAPI.GetStatus().Playing)
+                try
                 {
-                    spotifyLocalAPI.PlayURL(url, "");
-                    Thread.Sleep(5000);
+                    SpotifyLocalAPI spotifyLocalAPI = new SpotifyLocalAPI(50);
+
+                    if (!spotifyLocalAPI.Connect())
+                    {
+                        Thread.Sleep(5000);
+                        continue;
+                    }
+
+                    if (!spotifyLocalAPI.GetStatus().Playing)
+                    {
+                        spotifyLocalAPI.PlayURL(url, "");
+                        Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    break;
+                    continue;
                 }
             }
 
             if (numberOfTries <= 0)
             {
-                throw new Exception("Cannot start playing Spotify");
+                throw new Exception("Cannot connect to Spotify");
             }
         }
     }
