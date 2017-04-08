@@ -99,6 +99,21 @@ namespace Vanyofy
 
         private void Next_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentStep == 2)
+            {
+                foreach (var item in WizardAlarm.Days)
+                {
+                    if(item == false)
+                    {
+                        CurrentStep++;
+                        this.SetStep(CurrentStep);
+                        return;
+                    }
+                }
+                MessageBox.Show("Select One Day");
+                return;
+            }
+
             CurrentStep++;
             this.SetStep(CurrentStep);
         }
