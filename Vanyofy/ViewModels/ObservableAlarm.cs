@@ -127,7 +127,7 @@ namespace Vanyofy.ViewModels
                 execAlarm = execAlarm.AddDays(1);
             }
 
-            return now;
+            return execAlarm;
         }
 
         public void SetAlarm(Alarm alarm)
