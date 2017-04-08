@@ -144,10 +144,16 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate>
-                                            <StackPanel x:Name="NoAlarmsTemplate" Width="410" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#333">
-                                                <TextBlock x:Name="AddAlarmTooltip" HorizontalAlignment="Left" FontSize="22" Padding="6,0" Foreground="#eee">^add alarm</TextBlock>
-                                                <TextBlock HorizontalAlignment="Center"  FontSize="22" Padding="6,0" Foreground="#eee">you don't have any alarms yet</TextBlock>
-                                            </StackPanel>
+                                            <Border BorderBrush="White" BorderThickness="0 1 0 0" Width="410" HorizontalAlignment="Left">
+                                                <StackPanel x:Name="NoAlarmsTemplate" Width="410" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#9E9D24">
+                                                    <TextBlock 
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                    Margin="0,15,0,0"
+                                                    FontSize="22" Padding="6,0" Foreground="white">
+                                                        No alarms yet
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Border>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -181,7 +187,7 @@
                     <DataTemplate>                        
                         <Grid x:Name="AlarmSettings" Tag="{Binding ID}" Height="40">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="411" />
+                                <ColumnDefinition Width="408" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
