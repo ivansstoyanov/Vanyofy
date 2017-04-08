@@ -30,7 +30,7 @@ namespace Vanyofy.Settings
             return alarms;
         }
 
-        public void Add(Alarm newAlarm)
+        public Alarm Add(Alarm newAlarm)
         {
             if (newAlarm.Id == null)
             {
@@ -44,6 +44,8 @@ namespace Vanyofy.Settings
             {
                 Edit(newAlarm);
             }
+
+            return newAlarm;
         }
 
         public void Edit(Alarm newAlarm)

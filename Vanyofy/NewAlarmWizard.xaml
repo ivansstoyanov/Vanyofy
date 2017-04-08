@@ -222,9 +222,37 @@
                      Text="{Binding Path=PlaylistUrl, Mode=TwoWay}"/>
         </StackPanel>
 
-        <!--<StackPanel x:Name="step5" Width="0" HorizontalAlignment="Left">
-            <TextBlock HorizontalAlignment="Left"  FontSize="22" Padding="6,0" Foreground="#eee">IncraseVolume</TextBlock>
-        </StackPanel>-->
+        <StackPanel x:Name="step5" Width="0" HorizontalAlignment="Left" Background="#9E9D24">
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <CheckBox Margin="15,5,0,0" Style="{StaticResource OrangeSwitchStyle}" HorizontalAlignment="Left" IsChecked="{Binding IncrementVolume}" />
+                <TextBlock Margin="10,13,0,0" Text="Increase volume" FontSize="16" Foreground="white" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Grid Width="100" Height="45" Margin="5,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Background="#EF6C00" Name="NUDTextBox5" FontSize="20" Grid.Column="1" TextAlignment="Center" Padding="0,8,0,0" BorderThickness="0"
+                        PreviewKeyDown="NUDTextBox_PreviewKeyDown5" PreviewKeyUp="NUDTextBox_PreviewKeyUp5" TextChanged="NUDTextBox_TextChanged5"
+                        Text="{Binding Path=IncrementMinutes, Mode=TwoWay}"/>
+
+                    <RepeatButton Name="NUDButtonUP5" Style="{StaticResource OrangeSmallButton1}" Grid.Column="2" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonUP_Click5">
+                        <Image 
+                                Width="30" Height="30"
+                                       Source="/Icons/arrow-24-48.png" />
+                    </RepeatButton>
+                    <RepeatButton Name="NUDButtonDown5" Style="{StaticResource OrangeSmallButton1}" Grid.Column="0" FontSize="8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonDown_Click5">
+                        <Image 
+                                Width="30" Height="30"
+                                       Source="/Icons/arrow-88-48.png" />
+                    </RepeatButton>
+                </Grid>
+                <TextBlock Margin="10,0,0,0" FontSize="25" Foreground="White" VerticalAlignment="Bottom">Minutes</TextBlock>
+            </StackPanel>
+        </StackPanel>
 
         <StackPanel Grid.Column="1" HorizontalAlignment="Left">
             <Button x:Name="NextButton" Style="{StaticResource OrangeButton}" Width="45" Height="90" Click="Next_Click" >

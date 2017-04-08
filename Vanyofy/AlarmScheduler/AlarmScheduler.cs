@@ -84,6 +84,12 @@ namespace Vanyofy.AlarmScheduler
                 return;
             }
 
+            if (currentAlarm.IncrementVolume == false) // opposite
+            {
+                VolumeControl.VolumeService vs = new VolumeControl.VolumeService();
+                vs.IncreaseVolume(currentAlarm.IncrementSeconds);
+            }
+
             Logger.Log.Info("alarm starting " + currentAlarm.Name);
             this.StartAlarm(currentAlarm.GetCurrentAlarm());
         }

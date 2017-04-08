@@ -25,8 +25,6 @@ namespace Vanyofy
         {
             //TODO remove style when hover or selected listbox
 
-            //TODO increase volume
-
             InitializeComponent();
             this.AppAlarmSettingsRow.Height = new GridLength(0);
             this.AlarmWizard.WizardCompleted += new EventHandler(Handler_WizardCompleted);
@@ -78,11 +76,14 @@ namespace Vanyofy
             }
 
             AlarmsProvider ap = new AlarmsProvider();
-            ap.Add(newAlarm);
+            var na = ap.Add(newAlarm);
+            wizard.WizardAlarm.ID = na.Id;
 
             ShowAlarmWizard();
 
             RefreshAlarmsData();
+
+            this.AlarmScheduler.ScheduleAlarm(wizard.WizardAlarm);
         }
 
 

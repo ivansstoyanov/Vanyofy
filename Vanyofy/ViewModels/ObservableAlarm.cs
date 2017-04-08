@@ -30,6 +30,8 @@ namespace Vanyofy.ViewModels
 
         private int incrementSeconds { get; set; }
 
+        private int incrementMinutes { get; set; }
+
         private string visualTimer { get; set; }
 
         private string asd { get; set; }
@@ -56,13 +58,14 @@ namespace Vanyofy.ViewModels
             this.days = new ObservableCollection<bool>();
             for (int i = 0; i < 7; i++)
             {
-                this.days.Add(true);
+                this.days.Add(true);//which is false!!
             }
 
             this.timeHours = 8;
             this.timeMinutes = 40;
-            this.incrementVolume = false;
+            this.incrementVolume = true;//which is false!!
             this.incrementSeconds = 0;
+            this.incrementMinutes = 0;
 
 
             this.start = DateTime.Now;
@@ -80,15 +83,7 @@ namespace Vanyofy.ViewModels
 
             var val = next - now;
 
-            var daysint = (int)(val.TotalDays);
-            string daysString = string.Empty;
-
-            if (daysint != 0)
-            {
-                daysString = string.Format("{0}d", daysint);
-            }
-
-            this.VisualTimer = this.active ? string.Format("{0} {1}:{2}:{3}", daysString, val.Hours, val.Minutes, val.Seconds) : string.Empty;
+            this.VisualTimer = this.active ? string.Format("{0:%d}d {0:hh\\:mm\\:ss}", val) : string.Empty;
         }
 
         public DateTime GetNextAlarmDate()
@@ -161,7 +156,7 @@ namespace Vanyofy.ViewModels
             this.timeHours = alarm.Settings.Hour;
             this.timeMinutes = alarm.Settings.Minutes;
 
-            this.incrementVolume = alarm.Settings.IncrementVolume;
+            this.incrementVolume = !alarm.Settings.IncrementVolume;
             this.incrementSeconds = alarm.Settings.IncrementSeconds;
         }
 
@@ -178,7 +173,7 @@ namespace Vanyofy.ViewModels
             newAlarm.Settings = new AlarmSetting();
             newAlarm.Settings.PlaylistUrl = this.PlaylistUrl;
 
-            newAlarm.Settings.IncrementVolume = this.IncrementVolume;
+            newAlarm.Settings.IncrementVolume = !this.IncrementVolume;
             newAlarm.Settings.IncrementSeconds = this.IncrementSeconds;
 
             newAlarm.Settings.Hour = this.TimeHours;
@@ -210,6 +205,15 @@ namespace Vanyofy.ViewModels
             get
             {
                 return this.id;
+            }
+
+            set
+            {
+                if (value != this.id)
+                {
+                    this.id = value;
+                    NotifyPropertyChanged();
+                }
             }
         }
 
@@ -361,6 +365,24 @@ namespace Vanyofy.ViewModels
                 if (value != this.incrementSeconds)
                 {
                     this.incrementSeconds = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int IncrementMinutes
+        {
+            get
+            {
+                return this.incrementMinutes;
+            }
+
+            set
+            {
+                if (value != this.incrementMinutes)
+                {
+                    this.incrementMinutes = value;
+                    this.IncrementSeconds = (((value * 60) / 25 ) * 1000);
                     NotifyPropertyChanged();
                 }
             }

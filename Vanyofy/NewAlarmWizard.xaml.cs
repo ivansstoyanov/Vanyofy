@@ -27,7 +27,7 @@ namespace Vanyofy
             WizardSteps.Add(step2);
             WizardSteps.Add(step3);
             WizardSteps.Add(step4);
-            //WizardSteps.Add(step5);
+            WizardSteps.Add(step5);
         }
 
         public void StartOver(Alarm alarm = null)
@@ -215,6 +215,75 @@ namespace Vanyofy
             NUDTextBox.SelectionStart = NUDTextBox.Text.Length;
             BindingOperations.GetBindingExpression(NUDTextBox, TextBox.TextProperty).UpdateSource();
         }
+
+
+
+        private void NUDButtonUP_Click5(object sender, RoutedEventArgs e)
+        {
+            int number;
+            if (NUDTextBox5.Text != "") number = Convert.ToInt32(NUDTextBox5.Text);
+            else number = 0;
+            if (number < maxvalue)
+                NUDTextBox5.Text = Convert.ToString(number + 1);
+        }
+
+        private void NUDButtonDown_Click5(object sender, RoutedEventArgs e)
+        {
+            int number;
+            if (NUDTextBox5.Text != "") number = Convert.ToInt32(NUDTextBox5.Text);
+            else number = 0;
+            if (number > minvalue)
+                NUDTextBox5.Text = Convert.ToString(number - 1);
+        }
+
+        private void NUDTextBox_PreviewKeyDown5(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Up)
+            {
+                NUDButtonUP5.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(NUDButtonUP5, new object[] { true });
+            }
+
+
+            if (e.Key == Key.Down)
+            {
+                NUDButtonDown5.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(NUDButtonDown5, new object[] { true });
+            }
+        }
+
+        private void NUDTextBox_PreviewKeyUp5(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up)
+                typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(NUDButtonUP5, new object[] { false });
+
+            if (e.Key == Key.Down)
+                typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(NUDButtonDown5, new object[] { false });
+        }
+
+        private void NUDTextBox_TextChanged5(object sender, TextChangedEventArgs e)
+        {
+            int number = 0;
+            if (NUDTextBox5.Text != "")
+                if (!int.TryParse(NUDTextBox5.Text, out number)) NUDTextBox5.Text = startvalue.ToString();
+            if (number > maxvalue) NUDTextBox5.Text = maxvalue.ToString();
+            if (number < minvalue) NUDTextBox5.Text = minvalue.ToString();
+
+            if (NUDTextBox5.Text.Length == 0)
+            {
+                NUDTextBox5.Text = "00";
+            }
+            else if (NUDTextBox5.Text.Length == 1)
+            {
+                NUDTextBox5.Text = "0" + NUDTextBox5.Text;
+            }
+
+            NUDTextBox5.SelectionStart = NUDTextBox5.Text.Length;
+            BindingOperations.GetBindingExpression(NUDTextBox5, TextBox.TextProperty).UpdateSource();
+        }
+
+
 
 
 
