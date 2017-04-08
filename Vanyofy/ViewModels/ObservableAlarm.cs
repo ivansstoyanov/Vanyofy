@@ -49,7 +49,7 @@ namespace Vanyofy.ViewModels
         {
             this.id = null;
             this.name = "Wake me up";
-            this.active = false;
+            this.active = true;
             this.notActive = !this.active;
 
             this.playlistUrl = string.Empty;
