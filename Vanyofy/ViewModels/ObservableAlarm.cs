@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Threading;
 using Vanyofy.Models;
 
 namespace Vanyofy.ViewModels
@@ -29,6 +30,10 @@ namespace Vanyofy.ViewModels
 
         private int incrementSeconds { get; set; }
 
+        private string visualTimer { get; set; }
+
+        private string asd { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -39,6 +44,7 @@ namespace Vanyofy.ViewModels
             }
         }
 
+        DispatcherTimer t;
         public ObservableAlarm()
         {
             this.id = null;
@@ -57,6 +63,71 @@ namespace Vanyofy.ViewModels
             this.timeMinutes = 40;
             this.incrementVolume = false;
             this.incrementSeconds = 0;
+
+
+            this.start = DateTime.Now;
+            t = new DispatcherTimer(DispatcherPriority.Background, Dispatcher.CurrentDispatcher);
+            t.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            t.Tick += (sender, e) => T_Tick(sender, e, this);
+            t.IsEnabled = true;
+        }
+
+        DateTime start;
+        private void T_Tick(object sender, EventArgs e, ObservableAlarm a)
+        {
+            var now = DateTime.Now;
+            var next = GetNextAlarmDate();
+
+            var val = next - now;
+
+            var daysint = (int)(val.TotalDays);
+            string daysString = string.Empty;
+
+            if (daysint != 0)
+            {
+                daysString = string.Format("{0}d", daysint);
+            }
+
+            this.VisualTimer = this.active ? string.Format("{0} {1}:{2}:{3}", daysString, val.Hours, val.Minutes, val.Seconds) : string.Empty;
+        }
+
+        public DateTime GetNextAlarmDate()
+        {
+            DateTime now = DateTime.Now;
+            int day = ((int)DateTime.Now.DayOfWeek == 0) ? 7 : (int)DateTime.Now.DayOfWeek;//1 to 7
+            day = day - 1;
+
+            var execAlarm = DateTime.Now;
+            for (int i = day; i < this.days.Count; i++)
+            {
+                if (this.days[i] == false)
+                {
+                    TimeSpan ts = new TimeSpan(this.timeHours, this.timeMinutes, 0);
+                    execAlarm = execAlarm.Date + ts;
+
+                    if (execAlarm > now)
+                    {
+                        return execAlarm;
+                    }
+                }
+                execAlarm = execAlarm.AddDays(1);
+            }
+            for (int i = 0; i < day; i++)
+            {
+                if (this.days[i] == false)
+                {
+                    TimeSpan ts = new TimeSpan(this.timeHours, this.timeMinutes, 0);
+                    execAlarm = execAlarm.Date + ts;
+
+                    if (execAlarm > now)
+                    {
+                        return execAlarm;
+                    }
+                }
+                execAlarm = execAlarm.AddDays(1);
+            }
+
+            return now;
         }
 
         public void SetAlarm(Alarm alarm)
@@ -100,8 +171,8 @@ namespace Vanyofy.ViewModels
 
             newAlarm.Id = this.ID;
             newAlarm.Name = this.Name;
-            newAlarm.Active = false;
-            newAlarm.NotActive = true;
+            newAlarm.Active = this.Active;
+            newAlarm.NotActive = this.NotActive;
             newAlarm.DateCreated = DateTime.Now;
 
             newAlarm.Settings = new AlarmSetting();
@@ -290,6 +361,23 @@ namespace Vanyofy.ViewModels
                 if (value != this.incrementSeconds)
                 {
                     this.incrementSeconds = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string VisualTimer
+        {
+            get
+            {
+                return this.visualTimer;
+            }
+
+            set
+            {
+                if (value != this.visualTimer)
+                {
+                    this.visualTimer = value;
                     NotifyPropertyChanged();
                 }
             }

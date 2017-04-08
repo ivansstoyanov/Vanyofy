@@ -179,13 +179,13 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>                        
-                        <Grid x:Name="AlarmSettings" Tag="{Binding Id}" Height="40">
+                        <Grid x:Name="AlarmSettings" Tag="{Binding ID}" Height="40">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="411" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Grid x:Name="ItemRow" Tag="{Binding Id}">
+                            <Grid x:Name="ItemRow" Tag="{Binding ID}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="25" />
                                     <ColumnDefinition Width="345" />
@@ -197,8 +197,9 @@
                                         Width="18" Height="18"
                                        Source="/Icons/activity-feed-48.png" />
 
-                                <Label Grid.Column="1" VerticalAlignment="Bottom" FontSize="16" Content="{Binding Name}" />
-                                
+                                <Label Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="250" FontSize="16" Content="{Binding Name}" />
+                                <Label Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="16" Content="{Binding VisualTimer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
                                 <Button Grid.Column="2" x:Name="SetActive"
                                     Style="{StaticResource OrangeSmallButton}" 
                                     Visibility="{Binding Active, Converter={StaticResource BooleanToVisibilityConverter}}" 
@@ -216,7 +217,7 @@
                             </Grid>
 
                             <Grid Grid.Column="1" 
-                                  Tag="{Binding Id}"
+                                  Tag="{Binding ID}"
                                   Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />

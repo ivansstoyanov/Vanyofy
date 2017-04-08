@@ -6,6 +6,7 @@ using System.Windows;
 using Vanyofy.Models;
 using Vanyofy.Logging;
 using System.ComponentModel;
+using Vanyofy.ViewModels;
 
 namespace Vanyofy.AlarmScheduler
 {
@@ -18,7 +19,7 @@ namespace Vanyofy.AlarmScheduler
             this.cancellationTokensDictionary = new Dictionary<Guid, List<CancellationTokenSource>>();
         }
 
-        public void ScheduleAllAlarms(BindingList<Alarm> alarms)
+        public void ScheduleAllAlarms(BindingList<ObservableAlarm> alarms)
         {
             foreach (var alarm in alarms)
             {
@@ -26,7 +27,7 @@ namespace Vanyofy.AlarmScheduler
             }
         }
 
-        public void ScheduleAlarm(Alarm alarm)
+        public void ScheduleAlarm(ObservableAlarm alarm)
         {            
             if (alarm.NotActive)
             {
@@ -34,7 +35,7 @@ namespace Vanyofy.AlarmScheduler
             }
 
             DateTime alarmStart = DateTime.Now;
-            TimeSpan ts = new TimeSpan(alarm.Settings.Hour, alarm.Settings.Minutes, 0);
+            TimeSpan ts = new TimeSpan(alarm.TimeHours, alarm.TimeMinutes, 0);
             alarmStart = alarmStart.Date + ts;
 
             if (alarmStart < DateTime.Now)
@@ -47,7 +48,7 @@ namespace Vanyofy.AlarmScheduler
             var startInterval = alarmStart - DateTime.Now;
             var interval = TimeSpan.FromSeconds(86400);
 
-            var newCancelSource = CheckForCancellationToken(alarm.Id.Value);
+            var newCancelSource = CheckForCancellationToken(alarm.ID.Value);
             RunPeriodicAsync(() => AlarmExecute(alarm), startInterval, interval, newCancelSource.Token);
         }
 
@@ -55,7 +56,6 @@ namespace Vanyofy.AlarmScheduler
         {
             if (startAfter > TimeSpan.Zero)
             {
-                Logger.Log.Info("alarm start " + alarm.Name);
                 await Task.Delay(startAfter, token);
             }
 
@@ -65,26 +65,27 @@ namespace Vanyofy.AlarmScheduler
 
                 if (interval > TimeSpan.Zero)
                 {
-                    Logger.Log.Info("alarm start " + alarm.Name);
                     await Task.Delay(interval, token);
                 }
             }
         }
 
-        private void AlarmExecute(Alarm currentAlarm)
+        private void AlarmExecute(ObservableAlarm currentAlarm)
         {
+            Logger.Log.Info("alarm ready for execute " + currentAlarm.Name);
             if (currentAlarm.NotActive)
             {
                 return;
             }
 
             DayOfWeek today = DateTime.Now.DayOfWeek;
-            if (!currentAlarm.Settings.Days.Contains(today))
+            if (!currentAlarm.GetCurrentAlarm().Settings.Days.Contains(today))
             {
                 return;
             }
 
-            this.StartAlarm(currentAlarm);
+            Logger.Log.Info("alarm starting " + currentAlarm.Name);
+            this.StartAlarm(currentAlarm.GetCurrentAlarm());
         }
 
         private void StartAlarm(Alarm alarm)

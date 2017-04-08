@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using Vanyofy.Animations;
 using Vanyofy.Models;
 using Vanyofy.Settings;
+using Vanyofy.ViewModels;
 
 namespace Vanyofy
 {
     public partial class MainWindow : Window
     {        
-        public ObservableCollection<Alarm> AlarmsObservableList = null;
+        public BindingList<ObservableAlarm> AlarmsObservableList = null;
         AlarmScheduler.AlarmScheduler AlarmScheduler = null;
 
         public MainWindow()
         {
             //TODO remove style when hover or selected listbox
-
-            //TODO when on, set remaining timer visible
 
             //TODO increase volume
 
@@ -41,18 +43,18 @@ namespace Vanyofy
             AlarmsProvider ap = new AlarmsProvider();
             var alarms = ap.GetAll();
 
-            this.AlarmsObservableList = new ObservableCollection<Alarm>();
+            this.AlarmsObservableList = new BindingList<ObservableAlarm>();
             foreach (var a in alarms)
             {
-                this.AlarmsObservableList.Add(a);
+                var oa = new ObservableAlarm();
+                oa.SetAlarm(a);
+                this.AlarmsObservableList.Add(oa);
             }
 
             AlarmsList.ItemsSource = this.AlarmsObservableList;
             this.AlarmsList.SelectedItem = null;
             this.CreateNewButtonOpened.Visibility = Visibility.Visible;
             this.CreateNewButtonClosed.Visibility = Visibility.Collapsed;
-
-            //TODO animation when refreshing
         }
 
         public void Handler_WizardCompleted(object sender, EventArgs e)
@@ -119,7 +121,7 @@ namespace Vanyofy
         private void ActivateAlarmClick(object sender, RoutedEventArgs e)
         {
             var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.ID.ToString() == parent.ToString());
             var currentAlarmIndex = this.AlarmsObservableList.IndexOf(currentAlarm);
 
             var myValue = ((Button)sender).Tag;
@@ -134,13 +136,15 @@ namespace Vanyofy
                 notActiveButt.Visibility = Visibility.Hidden;
 
                 AlarmsProvider ap = new AlarmsProvider();
-                ap.SetActive(currentAlarm);
+                ap.SetActive(currentAlarm.GetCurrentAlarm());
 
                 var alarms = ap.GetAll();
-                this.AlarmsObservableList = new ObservableCollection<Alarm>();
+                this.AlarmsObservableList = new BindingList<ObservableAlarm>();
                 foreach (var a in alarms)
                 {
-                    this.AlarmsObservableList.Add(a);
+                    var oa = new ObservableAlarm();
+                    oa.SetAlarm(a);
+                    this.AlarmsObservableList.Add(oa);
                 }
                 AlarmsList.ItemsSource = this.AlarmsObservableList;
                 this.AlarmsList.SelectedItem = null;
@@ -159,38 +163,40 @@ namespace Vanyofy
                 notActiveButt.Visibility = Visibility.Visible;
 
                 AlarmsProvider ap = new AlarmsProvider();
-                ap.SetActive(currentAlarm);
+                ap.SetActive(currentAlarm.GetCurrentAlarm());
 
                 var alarms = ap.GetAll();
-                this.AlarmsObservableList = new ObservableCollection<Alarm>();
+                this.AlarmsObservableList = new BindingList<ObservableAlarm>();
                 foreach (var a in alarms)
                 {
-                    this.AlarmsObservableList.Add(a);
+                    var oa = new ObservableAlarm();
+                    oa.SetAlarm(a);
+                    this.AlarmsObservableList.Add(oa);
                 }
                 AlarmsList.ItemsSource = this.AlarmsObservableList;
                 this.AlarmsList.SelectedItem = null;
 
-                this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
+                this.AlarmScheduler.CheckForCancellationToken(currentAlarm.ID.Value);
             }
         }
 
         private void EditAlarmClick(object sender, RoutedEventArgs e)
         {
             var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.ID.ToString() == parent.ToString());
 
-            ShowAlarmWizard(currentAlarm);
+            ShowAlarmWizard(currentAlarm.GetCurrentAlarm());
         }
 
         private void DeleteAlarmClick(object sender, RoutedEventArgs e)
         {
             var parent = ((Grid)((Button)sender).Parent).Tag;
-            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.Id.ToString() == parent.ToString());
+            var currentAlarm = this.AlarmsObservableList.FirstOrDefault(x => x.ID.ToString() == parent.ToString());
 
-            this.AlarmScheduler.CheckForCancellationToken(currentAlarm.Id.Value);
+            this.AlarmScheduler.CheckForCancellationToken(currentAlarm.ID.Value);
 
             AlarmsProvider ap = new AlarmsProvider();
-            ap.Delete(currentAlarm.Id.Value);
+            ap.Delete(currentAlarm.ID.Value);
 
             RefreshAlarmsData();
         }
@@ -274,8 +280,8 @@ namespace Vanyofy
 
         void listbox1_Drop(object sender, DragEventArgs e)
         {
-            Alarm droppedData = e.Data.GetData(typeof(Alarm)) as Alarm;
-            Alarm target = ((ListBoxItem)(sender)).DataContext as Alarm;
+            ObservableAlarm droppedData = e.Data.GetData(typeof(ObservableAlarm)) as ObservableAlarm;
+            ObservableAlarm target = ((ListBoxItem)(sender)).DataContext as ObservableAlarm;
 
             int removedIdx = this.AlarmsList.Items.IndexOf(droppedData);
             int targetIdx = this.AlarmsList.Items.IndexOf(target);
@@ -312,7 +318,7 @@ namespace Vanyofy
 
             foreach (var listItem in this.AlarmsObservableList)
             {
-                newOrder.Add(listItem.Id.Value);
+                newOrder.Add(listItem.ID.Value);
             }
 
             AlarmsProvider ap = new AlarmsProvider();
